@@ -1,0 +1,154 @@
+
+## 1. Movie Recommendation Model
+
+This project implements a **Content-Based Recommender** using metadata to suggest films mathematically similar to a user's input.
+
+### Phase A: Setup and Data Loading
+
+* 
+`import pandas as pd`, `import numpy as np`: Load libraries for handling the movie database and numerical arrays.
+
+
+* 
+`from sklearn.feature_extraction.text import CountVectorizer`: Import the tool that converts text into a "Bag-of-Words" numerical matrix.
+
+
+* 
+`from sklearn.metrics.pairwise import cosine_similarity`: Import the function to calculate the mathematical angle (similarity) between two movie vectors.
+
+
+* 
+`df = pd.read_csv("movie_dataset.csv")`: Ingests the dataset containing ~4,800 movies and 24 attributes.
+
+
+* 
+`features = ['keywords', 'cast', 'genres', 'director']`: Defines which textual columns contain the most "semantic signal" for determining if two movies are alike.
+
+
+
+### Phase B: Preprocessing & Feature Engineering
+
+* 
+`for feature in features: df[feature] = df[feature].fillna('')`: A critical cleaning step; it replaces `NaN` (null) values with empty strings so the concatenation function doesn't crash.
+
+
+* 
+`def combine_features(row): ...`: This function creates a single, long string for each movie by merging the keywords, cast, genres, and director into one "unified corpus".
+
+
+* 
+`df['combined_features'] = df.apply(combine_features, axis=1)`: Executes the merging logic across all 4,800 rows of the DataFrame.
+
+
+
+### Phase C: Vectorization & Similarity Matrix
+
+* 
+`cv = CountVectorizer()`: Initializes the vectorizer which will count how many times each unique word appears across all movies.
+
+
+* 
+`count_matrix = cv.fit_transform(df['combined_features'])`: Converts the "combined_features" text into a large matrix of numbers where each row is a movie and each column is a unique word.
+
+
+* 
+`cosine_sim = cosine_similarity(count_matrix)`: Generates a square matrix of size $4803 \times 4803$. Each value represents a similarity score between 0 (completely different) and 1 (identical).
+
+
+
+### Phase D: Retrieval Logic
+
+* 
+`movie_index = get_index_from_title("Avatar")`: Translates the movie name into its corresponding row index in the matrix.
+
+
+* 
+`similar_movies = list(enumerate(cosine_sim[movie_index]))`: Fetches the similarity scores for "Avatar" and pairs them with the index of every other movie.
+
+
+* 
+`sorted_similar_movies = sorted(..., reverse=True)`: Sorts the entire list so that the most similar movies appear at the top.
+
+
+* 
+`for i, element in enumerate(sorted_similar_movies[1:6])`: Loops through the top results, starting from the second item (index 1) to avoid recommending the same movie the user just typed .
+
+
+
+---
+
+## 2. Twitter Sentiment Analysis
+
+This project uses **Natural Language Processing (NLP)** to classify tweets as either "Positive" or "Negative" using a supervised learning model.
+
+### Phase A: Library Injection & Data Cleaning
+
+* 
+`import re`: The library for **Regular Expressions**, used to scrub messy social media text.
+
+
+* 
+`from textblob import TextBlob`: Used to generate "Polarity" scores (the ground truth labels) for the dataset.
+
+
+* `def clean_text(text):`: A custom function that performs three major operations:
+1. 
+`re.sub(r'@[A-Za-z0-9_]+', '', text)`: Deletes @mentions.
+
+
+2. 
+`re.sub(r'https?:\/\/\S+', '', text)`: Deletes hyperlinks.
+
+
+3. 
+`re.sub(r'[^A-Za-z\s]', '', text)`: Deletes numbers and symbols, keeping only letters.
+
+
+4. 
+`text.lower().strip()`: Normalizes everything to lowercase.
+
+
+
+
+
+### Phase B: Labeling & Training Setup
+
+* 
+`polarity = TextBlob(text).sentiment.polarity`: Measures the emotional tone of a tweet from -1.0 to 1.0.
+
+
+* 
+`if polarity > 0.05: return 'Positive' ...`: Categorizes the numerical score into a binary "Positive" or "Negative" label .
+
+
+* `tfidf = TfidfVectorizer(max_features=5000, stop_words='english')`: Initializes **TF-IDF**. Unlike CountVectorizer, this gives more "weight" to rare, descriptive words and less weight to common words like "the" or "is".
+
+
+* 
+`X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)`: Reserves 20% of the data to test if the model actually learned anything or just memorized the training set.
+
+
+
+### Phase C: Logistic Regression Model
+
+* 
+`classifier = LogisticRegression(max_iter=1000)`: Sets up a linear classifier that finds a "decision boundary" between positive and negative word clusters.
+
+
+* 
+`classifier.fit(X_train, y_train)`: The training phase where the model adjusts the "weights" of 5,000 unique words to minimize classification errors.
+
+
+
+### Phase D: Evaluation Metrics
+
+* 
+`y_pred = classifier.predict(X_test)`: Asks the model to guess the sentiment of the 20% of tweets it has never seen before.
+
+
+* `accuracy_score(y_test, y_pred)`: Compares the model's guesses to the actual labels. The system achieved a high accuracy of **93.71%**.
+
+
+* 
+`classification_report(...)`: Provides a deep dive into **Precision** (how many "Positive" guesses were actually correct) and **Recall** (how many "Positive" tweets in total the model managed to find).
+
