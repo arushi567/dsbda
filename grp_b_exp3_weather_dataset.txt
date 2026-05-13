@@ -1,0 +1,389 @@
+# weather data analysis- grp-b exp-3
+
+STEP 1 — Install IntelliJ IDEA
+
+Download IntelliJ IDEA Community Edition:
+
+IntelliJ IDEA Community Edition
+https://www.jetbrains.com/idea/download
+
+During installation:
+
+✔ Create Desktop Shortcut
+✔ Add “Open Folder as Project”
+✔ Associate .java files
+x PATH not required
+
+Finish installation.
+
+STEP 2 — Open IntelliJ IDEA
+
+Open IntelliJ IDEA → Click:
+
+New Project
+
+STEP 3 — Create Java Project
+
+Select:
+
+Language: Java
+Project Name: WeatherAnalysisProject
+JDK: Java 8 or above
+
+Click:
+
+Create
+
+STEP 4 — Project Structure
+WeatherAnalysisProject
+│
+├── src
+└── sample_weather.txt
+STEP 5 — Create Dataset File
+
+Right click project → New → File
+
+Name:
+
+sample_weather.txt
+STEP 6 — Add Dataset
+
+You can use any weather dataset, or create your own.
+
+Sample format:
+
+Date,Temp,DewPoint,WindSpeed
+2024-01-01,15,10,5
+2024-01-02,16,11,6
+2024-01-03,18,12,7
+2024-01-04,19,13,5
+2024-01-05,17,10,4
+2024-01-06,20,14,8
+2024-01-07,22,15,9
+2024-01-08,21,14,7
+2024-01-09,23,16,10
+2024-01-10,24,17,11
+2024-01-11,25,18,9
+2024-01-12,26,19,8
+2024-01-13,24,17,7
+2024-01-14,22,15,6
+2024-01-15,20,13,5
+2024-01-16,19,12,4
+2024-01-17,18,11,5
+2024-01-18,17,10,6
+2024-01-19,16,9,7
+2024-01-20,15,8,5
+2024-01-21,14,8,4
+2024-01-22,13,7,6
+2024-01-23,12,6,7
+2024-01-24,14,9,8
+2024-01-25,16,10,9
+2024-01-26,18,12,10
+2024-01-27,20,14,11
+2024-01-28,22,15,9
+2024-01-29,21,14,8
+2024-01-30,23,16,7
+2024-01-31,24,17,6
+2024-02-01,25,18,5
+2024-02-02,26,19,6
+2024-02-03,27,20,7
+2024-02-04,28,21,8
+2024-02-05,29,22,9
+2024-02-06,30,23,10
+2024-02-07,31,24,11
+2024-02-08,32,25,10
+2024-02-09,33,26,9
+2024-02-10,34,27,8
+2024-02-11,35,28,7
+2024-02-12,36,29,6
+2024-02-13,35,28,5
+2024-02-14,34,27,4
+2024-02-15,33,26,5
+2024-02-16,32,25,6
+2024-02-17,31,24,7
+2024-02-18,30,23,8
+2024-02-19,29,22,9
+2024-02-20,28,21,10
+2024-02-21,27,20,11
+2024-02-22,26,19,10
+2024-02-23,25,18,9
+2024-02-24,24,17,8
+2024-02-25,23,16,7
+2024-02-26,22,15,6
+2024-02-27,21,14,5
+2024-02-28,20,13,4
+2024-02-29,19,12,5
+2024-03-01,18,11,6
+2024-03-02,17,10,7
+2024-03-03,16,9,8
+2024-03-04,15,8,9
+2024-03-05,14,7,10
+2024-03-06,13,6,11
+2024-03-07,12,5,10
+2024-03-08,13,6,9
+2024-03-09,14,7,8
+2024-03-10,15,8,7
+2024-03-11,16,9,6
+2024-03-12,17,10,5
+2024-03-13,18,11,4
+2024-03-14,19,12,5
+2024-03-15,20,13,6
+2024-03-16,21,14,7
+2024-03-17,22,15,8
+2024-03-18,23,16,9
+2024-03-19,24,17,10
+2024-03-20,25,18,11
+2024-03-21,26,19,10
+2024-03-22,27,20,9
+2024-03-23,28,21,8
+2024-03-24,29,22,7
+2024-03-25,30,23,6
+2024-03-26,31,24,5
+2024-03-27,32,25,4
+2024-03-28,33,26,5
+2024-03-29,34,27,6
+2024-03-30,35,28,7
+2024-03-31,36,29,8
+
+Format:
+
+Date,Temp,DewPoint,WindSpeed
+
+
+Right click src → New → Java Class → WeatherAnalyzer
+
+🌤 WeatherAnalyzer.java
+
+
+// bufferedreader is used to read file line by line
+import java.io.BufferedReader;
+
+// filereader is used to open file from disk
+import java.io.FileReader;
+
+// ioexception handles file input/output errors
+import java.io.IOException;
+
+public class WeatherAnalyzer {
+
+    public static void main(String[] args) {
+
+        try {
+
+            // open weather dataset file
+            BufferedReader br = new BufferedReader(
+                    new FileReader("sample_weather.txt"));
+
+            String line;
+
+            // variables to store sum of values
+            double tempSum = 0;
+            double dewSum = 0;
+            double windSum = 0;
+
+            // counter to calculate average
+            int count = 0;
+
+            // read file line by line
+            while ((line = br.readLine()) != null) {
+
+                // skip header row
+                if (line.startsWith("Date")) {
+                    continue;
+                }
+
+                // split line using comma (csv format)
+                String[] parts = line.split(",");
+
+                // ensure valid row structure
+                if (parts.length == 4) {
+
+                    // extract and convert values
+                    double temperature = Double.parseDouble(parts[1]);
+                    double dewPoint = Double.parseDouble(parts[2]);
+                    double windSpeed = Double.parseDouble(parts[3]);
+
+                    // add values to totals
+                    tempSum += temperature;
+                    dewSum += dewPoint;
+                    windSum += windSpeed;
+
+                    // increment row counter
+                    count++;
+                }
+            }
+
+            // close file
+            br.close();
+
+            // calculate averages
+            double avgTemp = tempSum / count;
+            double avgDew = dewSum / count;
+            double avgWind = windSum / count;
+
+            // display results
+            System.out.println("average weather statistics:\n");
+
+            System.out.println("average temperature : " + avgTemp);
+            System.out.println("average dew point   : " + avgDew);
+            System.out.println("average wind speed  : " + avgWind);
+
+            // for clean output
+            //System.out.printf("average temperature : %.2f%n", avgTemp);
+            //System.out.printf("average dew point   : %.2f%n", avgDew);
+            //System.out.printf("average wind speed  : %.2f%n", avgWind);
+
+        } catch (IOException e) {
+
+            // handle file errors
+            System.out.println("error reading file: " + e.getMessage());
+        }
+    }
+}
+
+STEP 8 — Run Program
+
+Run:
+WeatherAnalyzer.java
+
+📤 OUTPUT:
+average weather statistics:
+
+average temperature : 23.208791208791208
+average dew point   : 16.373626373626372
+average wind speed  : 7.3076923076923075
+
+STEP 9 — FINAL PROJECT STRUCTURE
+WeatherAnalysisProject
+│
+├── src
+│   └── WeatherAnalyzer.java
+│
+└── sample_weather.txt
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#writeup
+Design and Implementation of Weather Data Analysis Using Java File Processing
+AIM
+
+To design and implement a Java-based application that reads a weather dataset from a text file and computes the average values of temperature, dew point, and wind speed.
+
+THEORY
+1. INTRODUCTION TO DATA PROCESSING
+
+Data processing is the transformation of raw data into meaningful information.
+
+In this practical, raw weather data is processed to compute statistical averages.
+
+This is widely used in:
+
+weather forecasting
+climate analysis
+environmental monitoring
+data analytics systems
+2. STRUCTURED DATA (CSV FORMAT)
+
+The dataset used is in CSV (Comma Separated Values) format:
+
+Date,Temp,DewPoint,WindSpeed
+2024-01-01,15,10,5
+
+Each row represents:
+
+Field	Meaning
+Date	Observation date
+Temp	Temperature value
+DewPoint	Moisture level in air
+WindSpeed	Air movement speed
+3. DATA PARSING IN JAVA
+
+Java reads text files line by line using:
+
+BufferedReader
+FileReader
+
+Each line is split using:
+
+split(",")
+
+This converts a single string into structured fields.
+
+4. AVERAGE CALCULATION
+
+Average is computed using:
+
+Average=
+Number of values
+Sum of all values
+	​
+
+
+Each attribute (temperature, dew point, wind speed) is processed separately.
+
+5. ALGORITHM USED
+Read weather dataset file line by line
+Skip header row
+Split each line using comma delimiter
+Extract temperature, dew point, wind speed
+Add values to respective sums
+Count total valid records
+Compute average values
+Display final results
+6. CONCEPT USED IN THIS PRACTICAL
+
+This practical demonstrates:
+
+File handling in Java
+CSV data processing
+String parsing
+Type conversion
+Aggregation operations
+Basic statistical computation
+
+It simulates a basic data analytics pipeline.
+
+7. FLOW OF EXECUTION
+Input File (sample_weather.txt)
+        ↓
+Read Line by Line
+        ↓
+Skip Header Row
+        ↓
+Split CSV Data
+        ↓
+Extract Values
+        ↓
+Compute Sum
+        ↓
+Calculate Average
+        ↓
+Display Output
+8. LOG FILE STRUCTURE
+
+Example record:
+
+2024-01-01,15,10,5
+
+After splitting:
+
+Index	Value
+parts[0]	Date
+parts[1]	Temperature
+parts[2]	Dew Point
+parts[3]	Wind Speed
+9. OUTPUT
+average weather statistics:
+
+average temperature : 23.208791208791208
+average dew point   : 16.373626373626372
+average wind speed  : 7.3076923076923075
+
+10. RESULT
+
+The weather dataset was successfully processed using Java file handling, and the average values of temperature, dew point, and wind speed were computed accurately.
+
+11. CONCLUSION
+
+The practical successfully demonstrated how structured weather data can be processed using Java. The program efficiently read a CSV dataset, extracted relevant attributes, and computed statistical averages, simulating basic data analysis operations used in real-world weather monitoring systems.

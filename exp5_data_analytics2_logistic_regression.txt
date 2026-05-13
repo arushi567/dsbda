@@ -1,0 +1,684 @@
+# data analytics ii – logistic regression using social network ads dataset
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> data manipulation
+# numpy -> numerical operations
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+# sklearn -> machine learning algorithms
+
+# run only once if libraries are not installed
+
+# !pip install pandas numpy matplotlib seaborn scikit-learn
+
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# importing machine learning modules
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+# importing evaluation metrics
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+
+
+---
+
+# cell 3 – loading dataset
+
+# loading social network ads dataset
+
+# https://www.kaggle.com/datasets/shreyasur965/social-network-ads
+# or
+# https://www.kaggle.com/datasets/akram24/social-network-ads
+
+df = pd.read_csv("Social_Network_Ads.csv")
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 4 – loading dataset using url method
+
+
+# loading dataset directly using url
+
+# example:
+
+# url = "https://raw.githubusercontent.com/plotly/datasets/master/Social_Network_Ads.csv"
+
+# df = pd.read_csv(url)
+
+# print(df.head())
+
+
+---
+
+# cell 5 – checking dimensions of dataset
+
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+
+---
+
+# cell 6 – dataset information
+
+
+# displaying dataset information
+
+print(df.info())
+
+
+---
+
+# cell 7 – checking missing values
+
+
+# checking missing values in dataset
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 8 – statistical summary
+
+
+# generating statistical summary
+
+print(df.describe())
+
+
+---
+
+# cell 9 – removing unnecessary columns
+
+
+# removing user id column because it is not useful for prediction
+
+df.drop(
+    'User ID',
+    axis=1,
+    inplace=True
+)
+
+# displaying dataset
+
+print(df.head())
+
+
+---
+
+# cell 10 – encoding gender column
+
+
+# converting gender categorical values into numeric values
+
+# male -> 0
+# female -> 1
+
+df['Gender'] = df['Gender'].map({
+    'Male': 0,
+    'Female': 1
+})
+
+# displaying updated dataset
+
+print(df.head())
+
+
+---
+
+# cell 11 – selecting input and output variables
+
+
+# selecting independent variables
+
+x = df[['Age', 'EstimatedSalary']]
+
+# selecting dependent variable
+
+y = df['Purchased']
+
+# displaying variables
+
+print(x.head())
+
+print(y.head())
+
+
+---
+
+# cell 12 – splitting dataset into training and testing sets
+
+# splitting dataset into training and testing data
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x,
+    y,
+    test_size=0.25,
+    random_state=42
+)
+
+# displaying shapes
+
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+
+---
+
+# cell 13 – feature scaling
+
+# performing feature scaling
+
+# scaling improves logistic regression performance
+
+scaler = StandardScaler()
+
+x_train = scaler.fit_transform(x_train)
+
+x_test = scaler.transform(x_test)
+
+# displaying scaled values
+
+print(x_train)
+
+
+---
+
+# cell 14 – creating logistic regression model
+
+# creating logistic regression model
+
+model = LogisticRegression()
+
+
+---
+
+# cell 15 – training logistic regression model
+
+
+# training logistic regression model
+
+model.fit(x_train, y_train)
+
+# model learns relationship between features and output
+
+
+---
+
+# cell 16 – predicting test results
+
+
+# predicting purchased values
+
+y_pred = model.predict(x_test)
+
+# displaying predicted values
+
+print(y_pred)
+
+
+---
+
+# cell 17 – comparing actual and predicted values
+
+
+# comparing actual and predicted values
+
+comparison = pd.DataFrame({
+    'actual_value': y_test,
+    'predicted_value': y_pred
+})
+
+print(comparison.head(10))
+
+
+---
+
+# cell 18 – creating confusion matrix
+
+
+# creating confusion matrix
+
+cm = confusion_matrix(y_test, y_pred)
+
+print(cm)
+
+
+---
+
+# cell 19 – extracting tp, fp, tn, fn values
+
+
+# extracting confusion matrix values
+
+tn = cm[0][0]
+
+fp = cm[0][1]
+
+fn = cm[1][0]
+
+tp = cm[1][1]
+
+# displaying values
+
+print("true positive:", tp)
+
+print("false positive:", fp)
+
+print("true negative:", tn)
+
+print("false negative:", fn)
+
+
+---
+
+# cell 20 – calculating accuracy
+
+
+# calculating accuracy
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("accuracy:", accuracy)
+
+
+---
+
+# cell 21 – calculating error rate
+
+
+# calculating error rate
+
+error_rate = 1 - accuracy
+
+print("error rate:", error_rate)
+
+
+---
+
+# cell 22 – calculating precision
+
+
+# calculating precision
+
+precision = tp / (tp + fp)
+
+print("precision:", precision)
+
+
+---
+
+# cell 23 – calculating recall
+
+
+# calculating recall
+
+recall = tp / (tp + fn)
+
+print("recall:", recall)
+
+
+---
+
+# cell 24 – classification report
+
+
+# displaying classification report
+
+report = classification_report(
+    y_test,
+    y_pred
+)
+
+print(report)
+
+
+---
+
+# cell 25 – confusion matrix heatmap using seaborn
+
+
+# plotting confusion matrix heatmap
+
+plt.figure(figsize=(6,4))
+
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt='d'
+)
+
+plt.title("confusion matrix")
+plt.xlabel("predicted values")
+plt.ylabel("actual values")
+
+plt.show()
+
+
+---
+
+# cell 26 – scatter plot using matplotlib
+
+
+# plotting age vs estimated salary using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.scatter(
+    df['Age'],
+    df['EstimatedSalary']
+)
+
+plt.title("age vs estimated salary using matplotlib")
+plt.xlabel("age")
+plt.ylabel("estimated salary")
+
+plt.show()
+
+
+---
+
+# cell 27 – scatter plot using seaborn
+
+
+# plotting age vs estimated salary using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.scatterplot(
+    x='Age',
+    y='EstimatedSalary',
+    hue='Purchased',
+    data=df
+)
+
+plt.title("age vs estimated salary using seaborn")
+
+plt.show()
+
+
+---
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# writeup
+
+# aim
+
+1. implement logistic regression using python to perform classification on social_network_ads.csv dataset.
+2. compute confusion matrix to find:
+
+* true positive
+* false positive
+* true negative
+* false negative
+* accuracy
+* error rate
+* precision
+* recall
+
+---
+
+# dataset information
+
+## dataset used
+
+Social Network Ads Dataset
+
+# https://www.kaggle.com/datasets/shreyasur965/social-network-ads
+# or
+# https://www.kaggle.com/datasets/akram24/social-network-ads
+
+## dataset description
+
+the social network ads dataset contains information about users of a social networking website.
+
+features include:
+
+* age
+* gender
+* estimated salary
+
+target variable:
+
+* purchased
+
+the objective is to predict whether a user will purchase a product based on age and estimated salary.
+
+---
+
+# theory
+
+# what is machine learning?
+
+machine learning is a branch of artificial intelligence where systems learn patterns from data and make predictions or decisions.
+
+---
+
+# supervised learning
+
+supervised learning uses:
+
+* input data
+* correct output labels
+
+to train machine learning models.
+
+example:
+
+* predicting whether customer will purchase a product.
+
+---
+
+# classification
+
+classification is a supervised learning task where output belongs to categories.
+
+examples:
+
+* yes/no
+* purchased/not purchased
+* spam/not spam
+
+---
+
+# logistic regression
+
+logistic regression is a supervised machine learning classification algorithm.
+
+used for:
+
+* binary classification problems
+
+example:
+
+* purchased = 1
+* not purchased = 0
+
+---
+
+# sigmoid function
+
+logistic regression uses sigmoid function to convert output into probability.
+
+formula:
+
+σ(x)= 1/(1+e^(−x))
+
+output range:
+
+* 0 to 1
+
+---
+
+# feature scaling
+
+feature scaling standardizes numeric values into similar ranges.
+
+important because:
+
+* age and salary have different scales
+* improves model performance
+
+standard scaler formula:
+
+z= (x−μ)/ σ​
+
+where:
+
+* x = original value
+* μ = mean
+* σ = standard deviation
+
+---
+
+# confusion matrix
+
+confusion matrix evaluates classification performance.
+
+matrix format:
+
+| actual/predicted | positive | negative |
+| ---------------- | -------- | -------- |
+| positive         | tp       | fn       |
+| negative         | fp       | tn       |
+
+---
+
+# true positive
+
+model correctly predicts positive class.
+
+example:
+
+* customer purchased and model predicted purchased.
+
+---
+
+# true negative
+
+model correctly predicts negative class.
+
+example:
+
+* customer did not purchase and model predicted not purchased.
+
+---
+
+# false positive
+
+model incorrectly predicts positive class.
+
+example:
+
+* customer did not purchase but model predicted purchased.
+
+---
+
+# false negative
+
+model incorrectly predicts negative class.
+
+example:
+
+* customer purchased but model predicted not purchased.
+
+---
+
+# accuracy
+
+accuracy measures overall correct predictions.
+
+formula:
+
+Accuracy= {TP+TN}/{TP+TN+FP+FN}
+
+---
+
+# error rate
+
+error rate measures incorrect predictions.
+
+formula:
+
+Error Rate= {FP+FN}/{TP+TN+FP+FN}
+or error rate= 1 - accuracy
+
+---
+
+# precision
+
+precision measures correctness of positive predictions.
+
+formula:
+
+Precision= TP/{TP+FP}
+
+---
+
+# recall
+
+recall measures how many actual positive cases were correctly identified.
+
+formula:
+
+Recall= TP/{TP+FN}
+
+---
+
+# libraries used
+
+| library    | purpose                |
+| ---------- | ---------------------- |
+| pandas     | data manipulation      |
+| numpy      | numerical calculations |
+| matplotlib | plotting graphs        |
+| seaborn    | visualization          |
+| sklearn    | machine learning       |
+
+---
+
+# conclusion
+
+thus, logistic regression was successfully implemented using python on social_network_ads dataset.
+
+the model classified whether users purchased products based on age and estimated salary.
+
+classification performance was evaluated using:
+
+* confusion matrix
+* accuracy
+* error rate
+* precision
+* recall
+
+logistic regression proved useful for binary classification problems.

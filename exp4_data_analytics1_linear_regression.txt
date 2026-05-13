@@ -1,0 +1,632 @@
+# data analytics i – linear regression using boston housing dataset
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> data manipulation
+# numpy -> numerical operations
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+# sklearn -> machine learning library
+
+# run only once if libraries are not installed
+
+# !pip install pandas numpy matplotlib seaborn scikit-learn
+
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# importing machine learning modules
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+
+
+---
+
+# cell 3 – loading dataset
+
+# loading boston housing dataset
+
+# https://www.kaggle.com/datasets/altavish/boston-housing-dataset
+
+df = pd.read_csv("HousingData.csv")
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 4 – loading dataset using url method
+
+# loading dataset directly using url
+
+# dataset url example
+
+# url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
+
+# df = pd.read_csv(url)
+
+# print(df.head())
+
+
+---
+
+# cell 5 – checking dimensions of dataset
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+
+---
+
+# cell 6 – dataset information
+
+# displaying dataset information
+
+print(df.info())
+
+
+---
+
+# cell 7 – checking missing values
+
+# checking missing values in dataset
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 8 – statistical summary
+
+# generating statistical summary
+
+print(df.describe())
+
+
+---
+
+# cell 9 – handling missing values
+
+# filling missing values using mean
+
+# mean is used because columns are numerical
+
+df.fillna(df.mean(), inplace=True)
+
+# checking missing values again
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 10 – checking correlation
+
+# checking correlation between variables
+
+correlation = df.corr()
+
+print(correlation)
+
+
+---
+
+# cell 11 – plotting correlation heatmap
+
+# plotting correlation heatmap
+
+plt.figure(figsize=(12,8))
+
+sns.heatmap(
+    df.corr(),
+    annot=True
+)
+
+plt.title("correlation heatmap")
+
+plt.show()
+
+
+---
+
+# cell 12 – selecting input and output variables
+
+# selecting independent variables
+
+x = df.drop('MEDV', axis=1)
+
+# selecting dependent variable
+
+y = df['MEDV']
+
+# displaying input variables
+
+print(x.head())
+
+# displaying output variable
+
+print(y.head())
+
+
+---
+
+# cell 13 – splitting dataset into training and testing data
+
+# splitting dataset into training and testing sets
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+# displaying shapes
+
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+
+---
+
+# cell 14 – creating linear regression model
+
+# creating linear regression model
+
+model = LinearRegression()
+
+
+---
+
+# cell 15 – training the model
+
+# training linear regression model
+
+model.fit(x_train, y_train)
+
+# model learns relationship between features and house price
+
+
+---
+
+# cell 16 – predicting house prices
+
+# predicting values using testing data
+
+y_pred = model.predict(x_test)
+
+# displaying predicted values
+
+print(y_pred)
+
+
+---
+
+# cell 17 – comparing actual and predicted values
+
+# creating dataframe for comparison
+
+comparison = pd.DataFrame({
+    'actual_price': y_test,
+    'predicted_price': y_pred
+})
+
+# displaying comparison
+
+print(comparison.head(10))
+
+
+---
+
+# cell 18 – calculating model accuracy metrics
+
+# calculating mean absolute error
+
+mae = mean_absolute_error(y_test, y_pred)
+
+# calculating mean squared error
+
+mse = mean_squared_error(y_test, y_pred)
+
+# calculating root mean squared error
+
+rmse = np.sqrt(mse)
+
+# calculating r2 score
+
+r2 = r2_score(y_test, y_pred)
+
+# displaying results
+
+print("mean absolute error:", mae)
+
+print("mean squared error:", mse)
+
+print("root mean squared error:", rmse)
+
+print("r2 score:", r2)
+
+
+---
+
+# cell 19 – scatter plot using matplotlib
+
+# plotting actual vs predicted values using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.scatter(
+    y_test,
+    y_pred
+)
+
+plt.xlabel("actual prices")
+plt.ylabel("predicted prices")
+
+plt.title("actual vs predicted prices using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 20 – scatter plot using seaborn
+
+# plotting actual vs predicted values using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.scatterplot(
+    x=y_test,
+    y=y_pred
+)
+
+plt.xlabel("actual prices")
+plt.ylabel("predicted prices")
+
+plt.title("actual vs predicted prices using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 21 – plotting regression line using seaborn
+
+# plotting regression line
+
+plt.figure(figsize=(6,4))
+
+sns.regplot(
+    x=y_test,
+    y=y_pred
+)
+
+plt.xlabel("actual prices")
+plt.ylabel("predicted prices")
+
+plt.title("regression line")
+
+plt.show()
+
+
+---
+
+# cell 22 – displaying model coefficients
+
+# displaying coefficients of model
+
+coefficients = pd.DataFrame({
+    'feature': x.columns,
+    'coefficient': model.coef_
+})
+
+print(coefficients)
+
+
+---
+
+# cell 23 – displaying intercept
+
+# displaying intercept value
+
+print("intercept:", model.intercept_)
+
+
+---
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# writeup
+
+# aim
+
+create a linear regression model using python to predict home prices using boston housing dataset.
+
+the objective is to predict the value of house prices using the given features available in the dataset.
+
+---
+
+# dataset information
+
+## dataset used
+
+Boston Housing Dataset
+
+## dataset source
+
+[Boston Housing Dataset on Kaggle](https://www.kaggle.com/datasets/altavish/boston-housing-dataset)
+
+---
+
+# dataset description
+
+the boston housing dataset contains information about houses in boston city.
+
+the dataset has:
+
+* 506 rows
+* 14 columns
+
+the columns represent different factors affecting house prices.
+
+---
+
+# important features in dataset
+
+| feature | description                        |
+| ------- | ---------------------------------- |
+| crim    | crime rate                         |
+| zn      | residential land proportion        |
+| indus   | industrial area proportion         |
+| chas    | charles river dummy variable       |
+| nox     | nitric oxide concentration         |
+| rm      | average number of rooms            |
+| age     | age of property                    |
+| dis     | distance to employment centers     |
+| tax     | property tax rate                  |
+| ptratio | pupil teacher ratio                |
+| lstat   | lower status population percentage |
+| medv    | median house value                 |
+
+---
+
+# theory
+
+# what is data analytics?
+
+data analytics is the process of:
+
+* collecting data
+* analyzing data
+* finding patterns
+* making predictions
+
+using statistical and machine learning techniques.
+
+---
+
+# machine learning
+
+machine learning is a branch of artificial intelligence where computers learn patterns from data and make predictions.
+
+types:
+
+* supervised learning
+* unsupervised learning
+* reinforcement learning
+
+---
+
+# supervised learning
+
+in supervised learning:
+
+* input data and output labels are given
+* model learns relationship between them
+
+example:
+
+* predicting house prices
+
+---
+
+# linear regression
+
+linear regression is a supervised machine learning algorithm used for predicting continuous numeric values.
+
+example:
+
+* house prices
+* salary prediction
+* temperature prediction
+
+---
+
+# linear regression equation
+
+y = b_0 + b_1x_1 + b_2x_2 + ... + b_nx_n
+
+where:
+
+* y = predicted output
+* b0 = intercept
+* b1,b2 = coefficients
+* x = input variables
+
+---
+
+# independent and dependent variables
+
+## independent variables
+
+independent variables are input features used for prediction.
+
+examples:
+
+* crime rate
+* number of rooms
+* tax rate
+
+represented as:
+
+x
+
+
+---
+
+## dependent variable
+
+dependent variable is output variable to be predicted.
+
+in this practical:
+
+* medv = house price
+
+represented as:
+
+y
+
+
+---
+
+# train test split
+
+dataset is divided into:
+
+* training data
+* testing data
+
+training data:
+
+* used to train model
+
+testing data:
+
+* used to evaluate model performance
+
+---
+
+# model training
+
+during training:
+
+* model learns relationship between input variables and output variable.
+
+function used:
+
+model.fit()
+
+
+---
+
+# prediction
+
+after training:
+
+* model predicts house prices using testing data.
+
+function used:
+
+model.predict()
+
+
+---
+
+# evaluation metrics
+
+---
+
+# mean absolute error
+
+measures average absolute difference between actual and predicted values.
+
+formula:
+
+MAE = (1/n)*​(∑|yi​−yi^|)
+
+smaller mae means better model.
+
+---
+
+# mean squared error
+
+measures squared difference between actual and predicted values.
+
+formula:
+
+MSE= (1/n)*​(∑(yi​−yi^​)^2)
+
+n: Total number of observations (data points).
+∑: Summation symbol (summing from i=1 to n).
+yi): The actual observed value.
+yi^): The predicted value.
+(yi - yi^)^2: The squared difference (residual) between actual and predicted values.
+---
+
+# root mean squared error
+
+square root of mse.
+
+formula:
+
+RMSE = sqrt(MSE)
+
+---
+
+# r2 score
+
+measures goodness of fit of model.
+
+range:
+
+* closer to 1 = better model
+* closer to 0 = poor model
+
+---
+
+# libraries used
+
+| library    | purpose              |
+| ---------- | -------------------- |
+| pandas     | data manipulation    |
+| numpy      | numerical operations |
+| matplotlib | plotting graphs      |
+| seaborn    | visualization        |
+| sklearn    | machine learning     |
+
+---
+
+# conclusion
+
+thus, a linear regression model was successfully created using python for predicting house prices using boston housing dataset.
+
+the model was trained and tested successfully, and prediction performance was evaluated using:
+
+* mean absolute error
+* mean squared error
+* root mean squared error
+* r2 score
+
+linear regression helped in understanding the relationship between house features and house prices.

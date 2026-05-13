@@ -1,0 +1,396 @@
+# scala- grp-b exp-4
+
+#STEP 1 — Install Java Development Kit (JDK)
+What to do: Download and install JDK 17 (or 8/11 depending on the lab).
+Download:
+Oracle JDK 17 Windows x64 Installer
+https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
+
+During Installation:
+
+Install to the default path: C:\Program Files\Java\jdk-17
+
+System Variables:
+
+Search for Environment Variables in Windows.
+
+Click New under System Variables:
+
+Variable: JAVA_HOME
+
+Value: C:\Program Files\Java\jdk-17
+
+Edit Path, click New, and add: %JAVA_HOME%\bin
+
+STEP 2 — Install sbt (Build Tool)
+Download:
+https://www.scala-sbt.org/download/
+sbt Windows Installer (.msi)
+
+Installation:
+
+Run the MSI and finish. This allows IntelliJ to download Spark libraries automatically.
+
+STEP 3 — Install Spark & WinUtils
+Download Spark:
+https://spark.apache.org/downloads.html
+Choose a Spark release: 
+3.5.8 (Jan 15 2026)
+
+
+Choose a package type: 
+Pre-built for Apache Hadoop 3.3 and later
+
+
+Download Spark: spark-3.5.8-bin-hadoop3.tgz
+
+
+Spark 3.5.0 bin-hadoop3.tgz
+
+Download WinUtils:
+Winutils.exe for Hadoop 3.3.0
+
+Setup Folders:
+
+Extract Spark to: C:\spark\spark-3.5.0-bin-hadoop3
+
+Create folder: C:\hadoop\bin
+
+Paste winutils.exe into C:\hadoop\bin
+
+System Variables:
+
+Variable: SPARK_HOME | Value: C:\spark\spark-3.5.0-bin-hadoop3
+
+Variable: HADOOP_HOME | Value: C:\hadoop
+
+Add to Path: %SPARK_HOME%\bin and %HADOOP_HOME%\bin
+
+STEP 4 — Install IntelliJ & Scala Plugin
+Download:
+IntelliJ IDEA Community Edition
+
+After Opening IntelliJ:
+
+Go to Settings (Ctrl+Alt+S).
+
+Select Plugins.
+
+Search for Scala and click Install.
+
+Restart IDE.
+
+STEP 5 — Create Spark Project
+Click: New Project
+
+Name: SparkWordCount
+
+Location: Any folder (e.g., C:\Users\arush\IdeaProjects)
+
+Language: Scala
+
+Build system: sbt
+
+JDK: 17
+
+sbt version: (Leave default)
+
+Scala version: 2.12.18
+
+Click Create. Wait for the background tasks to finish (indexing/downloading).
+
+STEP 6 — Add Spark Dependencies
+Open the file: build.sbt
+
+Replace content with:
+
+
+name := "SparkWordCount"
+version := "0.1"
+scalaVersion := "2.12.18"
+
+// tell sbt to download spark core and sql libraries
+libraryDependencies ++= Seq(
+  "org.apache.spark" %% "spark-core" % "3.5.0",
+  "org.apache.spark" %% "spark-sql"  % "3.5.0"
+)
+Click the blue "Load sbt changes" elephant icon in the top-right of the editor.
+
+STEP 7 — Create Spark Object
+Right-click: src/main/scala
+Select: New → Scala Class
+Select: Object (from the list)
+Name: SimplePractical
+
+SimplePractical.scala:
+
+
+import org.apache.spark.sql.SparkSession
+
+object SimplePractical {
+  def main(args: Array[String]): Unit = {
+    // 1. initialize spark session
+    // builder helps set the app name and local master node
+    val spark = SparkSession.builder()
+      .appName("WordCountPractical")
+      .master("local[*]")
+      .getOrCreate()
+
+    // 2. set log level to error 
+    // hides the long startup information logs
+    spark.sparkContext.setLogLevel("ERROR")
+
+    // 3. create input data
+    // sequence of strings to simulate a text file
+    val sentences = Seq(
+      "Spark is fast",
+      "Scala is powerful",
+      "Spark and Scala are used in Big Data",
+      "Big Data is the future"
+    )
+
+    // 4. convert to rdd
+    // parallelize sends the data to spark executors
+    val rdd = spark.sparkContext.parallelize(sentences)
+
+    // 5. logic: flatmap splits, map pairs, reducebykey sums
+    val counts = rdd
+      .flatMap(line => line.split(" "))   // breaks sentences into words
+      .map(word => (word, 1))             // makes (word, 1) pairs
+      .reduceByKey(_ + _)                 // adds counts for same words
+
+    // 6. show output
+    // collect brings distributed results back to the screen
+    println("--- Word Count Results ---")
+    counts.collect().foreach(println)
+
+    // 7. close spark session
+    spark.stop()
+  }
+}
+STEP 8 — Add Java 17 VM Options (Crucial)
+If you use Java 17, you must do this or the code will crash:
+
+Right-click inside your code and select Run 'SimplePractical' (it will fail once).
+
+Go to the top toolbar -> SimplePractical dropdown -> Edit Configurations.
+
+Click Modify options -> Add VM options.
+
+Paste this line into the VM options box:
+--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.nio.cs=ALL-UNNAMED --add-opens=java.base/sun.security.action=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=java.base/sun.security.util=ALL-UNNAMED
+
+Click Apply and Run.
+
+
+Output:
+--- Word Count Results ---
+(Big,2)
+(the,1)
+(future,1)
+(are,1)
+(in,1)
+(Scala,2)
+(and,1)
+(powerful,1)
+(is,3)
+(Data,2)
+(fast,1)
+(Spark,2)
+(used,1)
+
+Process finished with exit code 0
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# writeup
+
+**Simple Program in Scala Using Apache Spark Framework**
+
+---
+
+## AIM
+
+To write and execute a simple Scala program using the Apache Spark framework to perform distributed data processing and demonstrate basic RDD transformations and actions.
+
+---
+
+## THEORY
+
+### 1. INTRODUCTION TO APACHE SPARK
+
+Apache Spark is a distributed data processing framework used for big data analytics. It processes large datasets efficiently by distributing computation across multiple nodes (or cores in local mode).
+
+Spark is widely used for:
+
+* Big Data Processing
+* Real-time analytics
+* Machine learning pipelines
+* Data transformation and ETL operations
+
+---
+
+### 2. SCALA AND SPARK INTEGRATION
+
+Scala is the primary language for Apache Spark because:
+
+* It runs on JVM
+* It supports functional programming
+* It integrates naturally with Spark APIs
+
+Spark programs in Scala are typically written using:
+
+* **SparkSession** → Entry point
+* **RDD (Resilient Distributed Dataset)** → Core data structure
+
+---
+
+### 3. SPARK SESSION
+
+SparkSession is the starting point of any Spark application.
+
+It:
+
+* Initializes Spark context
+* Manages configuration
+* Connects to execution environment (local or cluster)
+
+Example:
+
+```scala
+val spark = SparkSession.builder()
+  .appName("WordCountPractical")
+  .master("local[*]")
+  .getOrCreate()
+```
+
+---
+
+### 4. RDD (RESILIENT DISTRIBUTED DATASET)
+
+RDD is the fundamental data structure in Spark.
+
+Features:
+
+* Immutable (cannot be changed once created)
+* Distributed across partitions
+* Fault tolerant
+
+RDD operations are of two types:
+
+* **Transformations** (lazy operations)
+* **Actions** (trigger execution)
+
+---
+
+### 5. TRANSFORMATIONS USED
+
+#### a) flatMap
+
+Splits each line into multiple words.
+
+#### b) map
+
+Transforms each word into key-value pair:
+(word, 1)
+
+#### c) reduceByKey
+
+Aggregates values of same key to compute frequency.
+
+---
+
+### 6. ACTION USED
+
+#### collect()
+
+Brings distributed data from executors back to the driver node for display.
+
+---
+
+### 7. DATA PROCESSING FLOW
+
+This program simulates a small text processing system:
+
+Input sentences → Split into words → Map to pairs → Aggregate counts → Display result
+
+---
+
+### 8. ALGORITHM
+
+1. Initialize SparkSession
+2. Create input dataset (list of sentences)
+3. Convert dataset into RDD
+4. Split sentences into words using flatMap
+5. Map each word to (word, 1)
+6. Apply reduceByKey to count occurrences
+7. Collect and display output
+8. Stop Spark session
+
+---
+
+### 9. CONCEPTS USED
+
+This practical demonstrates:
+
+* Distributed computing
+* Functional transformations
+* Key-value pair processing
+* RDD operations
+* In-memory data processing
+
+It simulates a basic **Word Count system**, which is a foundational Big Data problem.
+
+---
+
+### 10. FLOW OF EXECUTION
+
+Input Data (Sentences)
+↓
+SparkSession Initialization
+↓
+Create RDD using parallelize()
+↓
+flatMap (Split words)
+↓
+map (Create key-value pairs)
+↓
+reduceByKey (Count words)
+↓
+collect()
+↓
+Display Output
+
+---
+
+### 11. SAMPLE OUTPUT
+
+```
+--- Word Count Results ---
+(Spark,2)
+(is,3)
+(Scala,2)
+(Big,2)
+(Data,2)
+(fast,1)
+(powerful,1)
+(and,1)
+(used,1)
+(the,1)
+(future,1)
+(are,1)
+(in,1)
+```
+
+---
+
+## RESULT
+
+The Scala program using Apache Spark was successfully executed. The program performed distributed word count processing using RDD transformations and displayed correct frequency of words.
+
+---
+
+## CONCLUSION
+
+This practical demonstrated how Apache Spark can be used with Scala to process data in a distributed manner. The word count example helped understand core Spark concepts such as RDDs, transformations, actions, and SparkSession initialization. It provides a foundational understanding of big data processing pipelines.

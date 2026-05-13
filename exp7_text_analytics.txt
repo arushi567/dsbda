@@ -1,0 +1,652 @@
+# text analytics – document preprocessing and tf-idf representation
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# nltk -> natural language processing
+# pandas -> data manipulation
+# numpy -> numerical operations
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+# sklearn -> tf-idf vectorization
+
+# run only once if libraries are not installed
+
+# !pip install nltk pandas numpy matplotlib seaborn scikit-learn
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import nltk
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# importing nltk modules
+
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk import pos_tag
+
+# importing tf-idf vectorizer
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+---
+
+# cell 3 – downloading nltk resources
+
+# downloading required nltk resources
+
+nltk.download('punkt')
+
+nltk.download('stopwords')
+
+nltk.download('averaged_perceptron_tagger')
+
+nltk.download('wordnet')
+
+
+---
+
+# cell 4 – creating sample document
+
+
+# creating large sample document
+
+document = """
+artificial intelligence is transforming modern technology and changing the way people interact
+with machines. machine learning, deep learning, and natural language processing are important
+branches of artificial intelligence. many industries such as healthcare, education, finance,
+transportation, and entertainment are using artificial intelligence systems to improve efficiency
+and accuracy.
+
+in healthcare, artificial intelligence helps doctors diagnose diseases faster and more accurately.
+in education, intelligent systems provide personalized learning experiences to students. banks
+use artificial intelligence to detect fraud and analyze customer behavior. self driving cars use
+computer vision and machine learning algorithms to understand road conditions and make decisions.
+
+natural language processing allows computers to understand human language. applications such
+as chatbots, virtual assistants, and speech recognition systems are based on natural language
+processing techniques. companies collect large amounts of textual data from websites, emails,
+social media, and customer reviews. text analytics helps in extracting meaningful information
+from this unstructured data.
+
+data preprocessing is one of the most important steps in text analytics. preprocessing techniques
+include tokenization, stop word removal, stemming, lemmatization, and part of speech tagging.
+these methods improve the quality of textual data before analysis and machine learning.
+"""
+
+# or
+
+# creating sample document
+
+document = """
+artificial intelligence and machine learning are transforming modern technology.
+healthcare and banking industries use artificial intelligence to improve efficiency.
+
+text analytics helps extract useful information from textual data.
+preprocessing methods include tokenization, stop word removal,
+stemming, lemmatization, and pos tagging.
+"""
+
+
+# displaying document
+
+print(document)
+
+
+---
+
+# cell 5 – tokenization
+
+# tokenization splits document into words
+
+tokens = word_tokenize(document)
+
+# displaying tokens
+
+print(tokens)
+
+
+---
+
+# cell 6 – counting total tokens
+
+# counting total number of tokens
+
+print("total number of tokens:", len(tokens))
+
+
+---
+
+# cell 7 – pos tagging
+
+# performing part of speech tagging
+
+pos_tags = pos_tag(tokens)
+
+# displaying pos tagged words
+
+print(pos_tags)
+
+
+---
+
+# cell 8 – removing stop words
+
+# loading english stop words
+
+stop_words = set(stopwords.words('english'))
+
+# removing stop words from tokens
+
+filtered_words = []
+
+for word in tokens:
+    
+    if word.lower() not in stop_words:
+        
+        filtered_words.append(word)
+
+# displaying filtered words
+
+print(filtered_words)
+
+---
+
+# cell 9 – counting filtered words
+
+# counting words after stop word removal
+
+print("number of filtered words:", len(filtered_words))
+
+---
+
+# cell 10 – stemming
+
+# creating stemming object
+
+stemmer = PorterStemmer()
+
+# applying stemming
+
+stemmed_words = []
+
+for word in filtered_words:
+    
+    stemmed_words.append(
+        stemmer.stem(word)
+    )
+
+# displaying stemmed words
+
+print(stemmed_words)
+
+---
+
+# cell 11 – lemmatization
+
+# creating lemmatizer object
+
+lemmatizer = WordNetLemmatizer()
+
+# applying lemmatization
+
+lemmatized_words = []
+
+for word in filtered_words:
+    
+    lemmatized_words.append(
+        lemmatizer.lemmatize(word)
+    )
+
+# displaying lemmatized words
+
+print(lemmatized_words)
+
+
+---
+
+# cell 12 – comparing stemming and lemmatization
+
+# comparing original, stemmed and lemmatized words
+
+comparison = pd.DataFrame({
+    'original_word': filtered_words[:20],
+    'stemmed_word': stemmed_words[:20],
+    'lemmatized_word': lemmatized_words[:20]
+})
+
+print(comparison)
+
+---
+
+# cell 13 – calculating term frequency
+
+# calculating term frequency manually
+
+term_frequency = {}
+
+for word in filtered_words:
+    
+    word = word.lower()
+    
+    if word in term_frequency:
+        
+        term_frequency[word] += 1
+        
+    else:
+        
+        term_frequency[word] = 1
+
+# displaying term frequencies
+
+print(term_frequency)
+
+
+---
+
+# cell 14 – converting term frequency into dataframe
+
+# converting term frequency dictionary into dataframe
+
+tf_df = pd.DataFrame(
+    term_frequency.items(),
+    columns=['word', 'term_frequency']
+)
+
+# sorting by highest frequency
+
+tf_df = tf_df.sort_values(
+    by='term_frequency',
+    ascending=False
+)
+
+# displaying dataframe
+
+print(tf_df.head(20))
+
+
+---
+
+# cell 15 – creating multiple sample documents
+
+# creating multiple documents for tf-idf
+
+documents = [
+
+"""
+artificial intelligence and machine learning are transforming industries.
+""",
+
+"""
+natural language processing helps computers understand human language.
+""",
+
+"""
+machine learning algorithms analyze large amounts of data efficiently.
+""",
+
+"""
+text analytics and data preprocessing improve machine learning models.
+"""
+]
+
+
+---
+
+# cell 16 – calculating tf-idf
+
+# creating tf-idf vectorizer object
+
+vectorizer = TfidfVectorizer()
+
+# fitting and transforming documents
+
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+# converting tf-idf matrix into dataframe
+
+tfidf_df = pd.DataFrame(
+    tfidf_matrix.toarray(),
+    columns=vectorizer.get_feature_names_out()
+)
+
+# displaying tf-idf values
+
+print(tfidf_df)
+
+
+---
+
+# cell 17 – plotting term frequency using matplotlib
+
+# plotting top 10 term frequencies using matplotlib
+
+top_words = tf_df.head(10)
+
+plt.figure(figsize=(10,5))
+
+plt.bar(
+    top_words['word'],
+    top_words['term_frequency']
+)
+
+plt.title("top 10 term frequencies using matplotlib")
+plt.xlabel("words")
+plt.ylabel("frequency")
+
+plt.xticks(rotation=45)
+
+plt.show()
+
+
+---
+
+# cell 18 – plotting term frequency using seaborn
+
+# plotting top 10 term frequencies using seaborn
+
+top_words = tf_df.head(10)
+
+plt.figure(figsize=(10,5))
+
+sns.barplot(
+    x='word',
+    y='term_frequency',
+    data=top_words
+)
+
+plt.title("top 10 term frequencies using seaborn")
+
+plt.xticks(rotation=45)
+
+plt.show()
+
+
+---
+
+# cell 19 – plotting word distribution
+
+# plotting histogram of term frequencies
+
+plt.figure(figsize=(8,5))
+
+plt.hist(tf_df['term_frequency'])
+
+plt.title("distribution of term frequencies")
+plt.xlabel("frequency")
+plt.ylabel("number of words")
+
+plt.show()
+
+
+---
+
+# cell 20 – displaying top tf-idf words
+
+# calculating average tf-idf score
+
+average_tfidf = tfidf_df.mean()
+
+# sorting tf-idf values
+
+average_tfidf = average_tfidf.sort_values(
+    ascending=False
+)
+
+# displaying top tf-idf words
+
+print(average_tfidf.head(10))
+
+
+---
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# writeup
+
+# aim
+
+1. extract sample document and apply following document preprocessing methods:
+
+* tokenization
+* pos tagging
+* stop words removal
+* stemming
+* lemmatization
+
+2. create representation of document by calculating:
+
+* term frequency
+* inverse document frequency
+
+---
+
+# theory
+
+# what is text analytics?
+
+text analytics is the process of extracting meaningful information from textual data using natural language processing and machine learning techniques.
+
+text analytics is used in:
+
+* chatbots
+* sentiment analysis
+* search engines
+* recommendation systems
+* spam filtering
+
+---
+
+# natural language processing
+
+natural language processing (nlp) is a branch of artificial intelligence that enables computers to understand and process human language.
+
+---
+
+# text preprocessing
+
+text preprocessing cleans and prepares textual data before analysis.
+
+it improves:
+
+* accuracy
+* efficiency
+* quality of machine learning models
+
+---
+
+# tokenization
+
+tokenization splits text into smaller units called tokens.
+
+example:
+
+sentence:
+
+```text
+machine learning is powerful
+```
+
+tokens:
+
+```text
+['machine', 'learning', 'is', 'powerful']
+```
+
+---
+
+# part of speech tagging
+
+pos tagging identifies grammatical role of words.
+
+examples:
+
+* noun
+* verb
+* adjective
+
+example:
+
+```text
+learning -> noun
+run -> verb
+beautiful -> adjective
+```
+
+---
+
+# stop words
+
+stop words are common words that do not add important meaning.
+
+examples:
+
+* is
+* the
+* and
+* of
+
+these words are removed to reduce unnecessary data.
+
+---
+
+# stemming
+
+stemming reduces words to root form.
+
+examples:
+
+| original word | stemmed word |
+| ------------- | ------------ |
+| playing       | play         |
+| studying      | studi        |
+| connected     | connect      |
+
+stemming may produce incomplete words.
+
+---
+
+# lemmatization
+
+lemmatization converts words into meaningful base words.
+
+examples:
+
+| original word | lemmatized word |
+| ------------- | --------------- |
+| running       | run             |
+| studies       | study           |
+| better        | good            |
+
+lemmatization produces valid dictionary words.
+
+---
+
+# term frequency
+
+term frequency measures how many times a word appears in a document.
+
+formula:
+
+TF(t)= number of occurrences of term / total number of terms
+
+higher tf means word appears frequently.
+
+---
+
+# inverse document frequency
+
+idf measures importance of word across multiple documents.
+
+formula:
+
+IDF(t)= log({N}/{df(t)})
+
+where:
+
+* N = total number of documents
+* df(t) = number of documents containing term t
+
+common words receive lower idf values.
+
+---
+
+# tf-idf
+
+tf-idf combines term frequency and inverse document frequency.
+
+formula:
+
+TF-IDF = TF x IDF
+
+tf-idf helps identify important words in documents.
+
+---
+
+# libraries used
+
+| library    | purpose                     |
+| ---------- | --------------------------- |
+| nltk       | natural language processing |
+| pandas     | data manipulation           |
+| numpy      | numerical operations        |
+| matplotlib | plotting graphs             |
+| seaborn    | visualization               |
+| sklearn    | tf-idf vectorization        |
+
+---
+
+# important functions used
+
+| function            | purpose                 |
+| ------------------- | ----------------------- |
+| `word_tokenize()`   | splits text into tokens |
+| `pos_tag()`         | performs pos tagging    |
+| `stopwords.words()` | loads stop words        |
+| `stem()`            | performs stemming       |
+| `lemmatize()`       | performs lemmatization  |
+| `TfidfVectorizer()` | calculates tf-idf       |
+
+---
+
+# explanation of operations performed
+
+in this practical:
+
+* a large sample document was created
+* tokenization was performed
+* total tokens were counted
+* pos tagging was applied
+* stop words were removed
+* stemming was performed
+* lemmatization was performed
+* term frequency was calculated
+* tf-idf representation was generated
+* graphs were plotted using matplotlib and seaborn
+
+---
+
+# conclusion
+
+thus, text analytics preprocessing techniques were successfully implemented using python.
+
+the following preprocessing operations were performed:
+
+* tokenization
+* pos tagging
+* stop word removal
+* stemming
+* lemmatization
+
+term frequency and tf-idf techniques were used to represent textual data numerically for further text mining and machine learning tasks.

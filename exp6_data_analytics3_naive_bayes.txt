@@ -1,0 +1,681 @@
+# data analytics iii – naïve bayes classification using iris dataset
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> data manipulation
+# numpy -> numerical operations
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+# sklearn -> machine learning algorithms
+
+# run only once if libraries are not installed
+
+# !pip install pandas numpy matplotlib seaborn scikit-learn
+
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# importing machine learning modules
+
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+
+# importing evaluation metrics
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+
+
+---
+
+# cell 3 – loading iris dataset
+
+
+# loading iris dataset
+# https://www.kaggle.com/datasets/uciml/iris/data
+
+df = pd.read_csv("Iris.csv")
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 4 – loading dataset using url method
+
+
+# loading dataset directly using url
+
+# example:
+
+# url = "https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv"
+
+# df = pd.read_csv(url)
+
+# print(df.head())
+
+
+---
+
+# cell 5 – checking dimensions of dataset
+
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+
+---
+
+# cell 6 – dataset information
+
+
+# displaying dataset information
+
+print(df.info())
+
+
+---
+
+# cell 7 – checking missing values
+
+
+# checking missing values in dataset
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 8 – statistical summary
+
+
+# generating statistical summary
+
+print(df.describe())
+
+
+---
+
+# cell 9 – removing unnecessary id column
+
+# removing id column because it is not useful for prediction
+
+df.drop(
+    'Id',
+    axis=1,
+    inplace=True
+)
+
+# displaying updated dataset
+
+print(df.head())
+
+
+---
+
+# cell 10 – checking unique species values
+
+# displaying unique species values
+
+print(df['Species'].unique())
+
+
+---
+
+# cell 11 – encoding species column
+
+# converting species names into numeric values
+
+# iris-setosa -> 0
+# iris-versicolor -> 1
+# iris-virginica -> 2
+
+df['Species'] = df['Species'].map({
+    'Iris-setosa': 0,
+    'Iris-versicolor': 1,
+    'Iris-virginica': 2
+})
+
+# displaying updated dataset
+
+print(df.head())
+
+
+---
+
+# cell 12 – selecting input and output variables
+
+
+# selecting independent variables
+
+x = df.drop('Species', axis=1)
+
+# selecting dependent variable
+
+y = df['Species']
+
+# displaying variables
+
+print(x.head())
+
+print(y.head())
+
+
+---
+
+# cell 13 – splitting dataset into training and testing data
+
+# splitting dataset into training and testing sets
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x,
+    y,
+    test_size=0.25,
+    random_state=42
+)
+
+# displaying shapes
+
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+
+---
+
+# cell 14 – creating naïve bayes model
+
+# creating gaussian naïve bayes model
+
+model = GaussianNB()
+
+
+---
+
+# cell 15 – training naïve bayes model
+
+
+# training naïve bayes model
+
+model.fit(x_train, y_train)
+
+# model learns patterns from training data
+
+
+---
+
+# cell 16 – predicting test results
+
+# predicting species values
+
+y_pred = model.predict(x_test)
+
+# displaying predicted values
+
+print(y_pred)
+
+
+---
+
+# cell 17 – comparing actual and predicted values
+
+# comparing actual and predicted values
+
+comparison = pd.DataFrame({
+    'actual_species': y_test,
+    'predicted_species': y_pred
+})
+
+print(comparison.head(10))
+
+
+---
+
+# cell 18 – creating confusion matrix
+
+# creating confusion matrix
+
+cm = confusion_matrix(y_test, y_pred)
+
+# displaying confusion matrix
+
+print(cm)
+
+
+---
+
+# cell 19 – plotting confusion matrix heatmap
+
+# plotting confusion matrix heatmap using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt='d'
+)
+
+plt.title("confusion matrix")
+plt.xlabel("predicted values")
+plt.ylabel("actual values")
+
+plt.show()
+
+
+---
+
+# cell 20 – extracting tp, fp, tn, fn values
+
+# extracting values from confusion matrix
+
+# for binary metrics demonstration,
+# considering iris-setosa as positive class
+
+tp = cm[0][0]
+
+fp = cm[1][0] + cm[2][0]
+
+fn = cm[0][1] + cm[0][2]
+
+tn = cm[1][1] + cm[1][2] + cm[2][1] + cm[2][2]
+
+# displaying values
+
+print("true positive:", tp)
+
+print("false positive:", fp)
+
+print("false negative:", fn)
+
+print("true negative:", tn)
+
+
+---
+
+# cell 21 – calculating accuracy
+
+# calculating accuracy
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("accuracy:", accuracy)
+
+
+---
+
+# cell 22 – calculating error rate
+
+# calculating error rate
+
+error_rate = 1 - accuracy
+
+print("error rate:", error_rate)
+
+
+---
+
+# cell 23 – calculating precision
+
+# calculating precision
+
+precision = tp / (tp + fp)
+
+print("precision:", precision)
+
+---
+
+# cell 24 – calculating recall
+
+# calculating recall
+
+recall = tp / (tp + fn)
+
+print("recall:", recall)
+
+
+---
+
+# cell 25 – classification report
+
+
+# displaying classification report
+
+report = classification_report(
+    y_test,
+    y_pred
+)
+
+print(report)
+
+---
+
+# cell 26 – scatter plot using matplotlib
+
+# plotting sepal length vs petal length using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.scatter(
+    df['SepalLengthCm'],
+    df['PetalLengthCm']
+)
+
+plt.title("sepal length vs petal length using matplotlib")
+plt.xlabel("sepal length")
+plt.ylabel("petal length")
+
+plt.show()
+
+
+---
+
+# cell 27 – scatter plot using seaborn
+
+# plotting sepal length vs petal length using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.scatterplot(
+    x='SepalLengthCm',
+    y='PetalLengthCm',
+    hue='Species',
+    data=df
+)
+
+plt.title("sepal length vs petal length using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 28 – histogram using matplotlib
+
+# histogram using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['SepalLengthCm'])
+
+plt.title("sepal length distribution using matplotlib")
+plt.xlabel("sepal length")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 29 – histogram using seaborn
+
+# histogram using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['SepalLengthCm'])
+
+plt.title("sepal length distribution using seaborn")
+
+plt.show()
+
+
+---
+
+# student writeup
+
+# aim
+
+1. implement simple naïve bayes classification algorithm using python on iris.csv dataset.
+2. compute confusion matrix to find:
+
+* true positive
+* false positive
+* true negative
+* false negative
+* accuracy
+* error rate
+* precision
+* recall
+
+---
+
+# dataset information
+
+## dataset used
+https://www.kaggle.com/datasets/uciml/iris/data
+
+Iris Dataset
+
+## dataset description
+
+the iris dataset contains measurements of flowers.
+
+features include:
+
+* sepal length
+* sepal width
+* petal length
+* petal width
+
+target variable:
+
+* species of flower
+
+species:
+
+* iris-setosa
+* iris-versicolor
+* iris-virginica
+
+---
+
+# theory
+
+# what is machine learning?
+
+machine learning is a branch of artificial intelligence where systems learn patterns from data and make predictions.
+
+---
+
+# classification
+
+classification is a supervised learning task where output belongs to categories.
+
+examples:
+
+* spam or not spam
+* pass or fail
+* flower species classification
+
+---
+
+# naïve bayes algorithm
+
+naïve bayes is a supervised machine learning classification algorithm based on probability and bayes theorem.
+
+it assumes:
+
+* all features are independent from each other.
+
+---
+
+# bayes theorem
+
+formula:
+
+P(A|B)= {P(B|A)*P(A)}/{P(B)}
+
+where:
+
+* P(A|B) = probability of event a given b
+* P(B|A) = probability of event b given a
+* P(A) = probability of event a
+* P(B) = probability of event b
+
+---
+
+# gaussian naïve bayes
+
+gaussian naïve bayes is used when:
+
+* input features are continuous numeric values.
+
+example:
+
+* sepal length
+* petal width
+
+---
+
+# train test split
+
+dataset is divided into:
+
+* training data
+* testing data
+
+training data:
+
+* used to train model
+
+testing data:
+
+* used to evaluate performance
+
+---
+
+# confusion matrix
+
+confusion matrix is used to evaluate classification performance.
+
+---
+
+# true positive
+
+model correctly predicts positive class.
+
+---
+
+# true negative
+
+model correctly predicts negative class.
+
+---
+
+# false positive
+
+model incorrectly predicts positive class.
+
+---
+
+# false negative
+
+model incorrectly predicts negative class.
+
+---
+
+# accuracy
+
+accuracy measures overall correct predictions.
+
+formula:
+
+Accuracy= {TP+TN}/{TP+TN+FP+FN}
+
+---
+
+# error rate
+
+error rate measures incorrect predictions.
+
+formula:
+
+Error Rate= {FP+FN}/{TP+TN+FP+FN}
+
+---
+
+# precision
+
+precision measures correctness of positive predictions.
+
+formula:
+
+Precision={TP}/{TP+FP}
+
+---
+
+# recall
+
+recall measures how many actual positive cases were correctly identified.
+
+formula:
+
+Recall={TP}/{TP+FN}
+
+---
+
+# libraries used
+
+| library    | purpose              |
+| ---------- | -------------------- |
+| pandas     | data manipulation    |
+| numpy      | numerical operations |
+| matplotlib | plotting graphs      |
+| seaborn    | visualization        |
+| sklearn    | machine learning     |
+
+---
+
+# explanation of operations performed
+
+in this practical:
+
+* iris dataset was loaded
+* unnecessary id column was removed
+* species column was encoded
+* independent and dependent variables were selected
+* dataset was split into training and testing sets
+* gaussian naïve bayes model was created
+* model was trained
+* predictions were generated
+* confusion matrix was computed
+* tp, fp, tn, fn values were calculated
+* accuracy, error rate, precision and recall were calculated
+* graphs and visualizations were plotted
+
+---
+
+# conclusion
+
+thus, simple naïve bayes classification algorithm was successfully implemented on iris dataset using python.
+
+the model classified flower species based on flower measurements.
+
+classification performance was evaluated using:
+
+* confusion matrix
+* accuracy
+* precision
+* recall
+* error rate
+
+naïve bayes algorithm proved effective for classification of iris flower species.

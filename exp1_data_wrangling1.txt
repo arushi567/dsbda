@@ -1,0 +1,1158 @@
+#practical 1- data wrangling 1
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#using titanic dataset
+
+# data wrangling practical – titanic dataset using python
+
+# dataset source
+
+Titanic Dataset
+
+[Titanic Dataset on Kaggle](https://www.kaggle.com/datasets/yasserh/titanic-dataset)
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> used for data manipulation and analysis
+# numpy -> used for numerical calculations
+# matplotlib -> used for plotting graphs
+# seaborn -> used for advanced visualizations
+
+# run this only once if libraries are not installed
+
+# !pip install pandas numpy matplotlib seaborn
+
+
+---
+
+# cell 2 – importing libraries
+
+
+# importing required python libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+---
+
+# cell 3 – loading dataset using csv file
+
+
+# loading dataset from downloaded csv file
+
+df = pd.read_csv("titanic.csv")
+
+# displaying first 5 rows of dataset
+
+print(df.head())
+
+
+---
+
+# cell 4 – loading dataset directly from url
+
+
+# loading dataset directly from internet using url
+
+# this method works without manually downloading dataset
+
+# dataset url
+url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+
+# reading dataset from url
+df_url = pd.read_csv(url)
+
+# displaying first 5 rows
+print(df_url.head())
+
+
+---
+
+# cell 5 – checking dimensions of dataset
+
+
+# checking total rows and columns
+
+print("shape of dataset:", df.shape)
+
+# shape gives:
+# number of rows
+# number of columns
+
+
+---
+
+# cell 6 – displaying dataset information
+
+
+# displaying complete dataset information
+
+print(df.info())
+
+# info() shows:
+# column names
+# non null values
+# data types
+# memory usage
+
+
+---
+
+# cell 7 – checking missing values
+
+
+# checking missing values in each column
+
+print(df.isnull().sum())
+
+# isnull() checks null values
+# sum() counts total null values
+
+
+---
+
+# cell 8 – statistical summary
+
+
+# generating statistical summary
+
+print(df.describe())
+
+# describe() gives:
+# mean
+# standard deviation
+# minimum value
+# maximum value
+# quartiles
+
+
+---
+
+# cell 9 – checking data types
+
+
+# checking data types of all columns
+
+print(df.dtypes)
+
+# common data types:
+# int64 -> integer values
+# float64 -> decimal values
+# object -> text/string values
+
+
+---
+
+# cell 10 – handling missing values in age column
+
+
+# filling missing values in age column using mean
+
+df['Age'].fillna(
+    df['Age'].mean(),
+    inplace=True
+)
+
+# mean is used because age is numerical data
+
+print(df['Age'].isnull().sum())
+
+
+---
+
+# cell 11 – handling missing values in embarked column
+
+
+# filling missing values in embarked column using mode
+
+df['Embarked'].fillna(
+    df['Embarked'].mode()[0],
+    inplace=True
+)
+
+# mode is used because embarked is categorical data
+
+print(df['Embarked'].isnull().sum())
+
+
+---
+
+# cell 12 – handling missing values in cabin column
+
+
+# checking missing values in cabin column
+
+print(df['Cabin'].isnull().sum())
+
+
+---
+
+# cell 13 – different ways to handle cabin column
+
+
+# cabin column has too many missing values
+
+# there are multiple ways to handle missing values
+
+# ---------------------------------------------------
+# method 1 -> remove cabin column completely
+# ---------------------------------------------------
+
+# this is the most common method because cabin has too many null values
+
+df.drop('Cabin', axis=1, inplace=True)
+
+print(df.head())
+
+# axis=1 means column operation
+# inplace=True means permanently modify dataframe
+
+
+---
+
+# cell 14 – alternative methods for cabin handling
+
+
+# alternative methods for cabin column
+
+# method 2 -> fill missing values with unknown
+
+# df['Cabin'].fillna('Unknown', inplace=True)
+
+# method 3 -> fill using mode
+
+# df['Cabin'].fillna(df['Cabin'].mode()[0], inplace=True)
+
+# method 4 -> create separate category
+
+# df['Cabin'] = df['Cabin'].fillna('No Cabin')
+
+# note:
+# method 1 is preferred here because
+# cabin has too many missing values
+
+
+---
+
+# cell 15 – checking missing values again
+
+
+# checking missing values after preprocessing
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 16 – converting data types
+
+
+# converting age column from float to integer
+
+df['Age'] = df['Age'].astype(int)
+
+# checking updated data types
+
+print(df.dtypes)
+
+# astype() is used for datatype conversion
+
+
+---
+
+# cell 17 – normalization using min max normalization
+
+
+# normalizing fare column between 0 and 1
+
+df['Fare_normalized'] = (
+    (df['Fare'] - df['Fare'].min()) /
+    (df['Fare'].max() - df['Fare'].min())
+)
+
+# displaying original and normalized values
+
+print(df[['Fare', 'Fare_normalized']].head())
+
+
+---
+
+# cell 18 – label encoding sex column
+
+
+# converting categorical values into numeric values
+
+# male -> 0
+# female -> 1
+
+df['Sex'] = df['Sex'].map({
+    'male': 0,
+    'female': 1
+})
+
+# displaying encoded column
+
+print(df[['Sex']].head())
+
+
+---
+
+# cell 19 – one hot encoding embarked column
+
+
+# converting embarked categorical column into binary columns
+
+df = pd.get_dummies(
+    df,
+    columns=['Embarked'],
+    dtype=int
+)
+
+# dtype=int converts true/false into 1/0
+
+print(df.head())
+
+
+---
+
+# cell 20 – removing unnecessary columns
+
+
+# removing unnecessary text columns
+
+# these columns are not useful for machine learning
+
+df.drop(
+    ['Name', 'Ticket'],
+    axis=1,
+    inplace=True
+)
+
+# displaying updated dataset
+
+print(df.head())
+
+
+---
+
+# cell 21 – checking final cleaned dataset
+
+
+# displaying final dataset information
+
+print(df.info())
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 22 – histogram using matplotlib
+
+
+# histogram using matplotlib for age distribution
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['Age'])
+
+plt.title("age distribution using matplotlib")
+plt.xlabel("age")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 23 – histogram using seaborn
+
+
+# histogram using seaborn for age distribution
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['Age'])
+
+plt.title("age distribution using seaborn")
+plt.xlabel("age")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 24 – scatter plot using matplotlib
+
+
+# scatter plot using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.scatter(
+    df['Age'],
+    df['Fare']
+)
+
+plt.title("age vs fare using matplotlib")
+plt.xlabel("age")
+plt.ylabel("fare")
+
+plt.show()
+
+
+---
+
+# cell 25 – scatter plot using seaborn
+
+
+# scatter plot using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.scatterplot(
+    x='Age',
+    y='Fare',
+    hue='Survived',
+    data=df
+)
+
+plt.title("age vs fare using seaborn")
+plt.xlabel("age")
+plt.ylabel("fare")
+
+plt.show()
+
+
+---
+
+# cell 26 – boxplot using matplotlib
+
+
+# boxplot using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.boxplot(df['Fare'])
+
+plt.title("fare boxplot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 27 – boxplot using seaborn
+
+
+# boxplot using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.boxplot(y=df['Fare'])
+
+plt.title("fare boxplot using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 28 – correlation heatmap using seaborn
+
+
+# plotting heatmap for correlation
+
+plt.figure(figsize=(10,6))
+
+sns.heatmap(
+    df.corr(),
+    annot=True
+)
+
+plt.title("correlation heatmap")
+
+plt.show()
+
+
+---
+
+# cell 29 – saving cleaned dataset
+
+
+# saving cleaned dataset into csv file
+
+df.to_csv(
+    "titanic_cleaned.csv",
+    index=False
+)
+
+print("cleaned dataset saved successfully")
+
+
+---
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#using iris dataset
+
+
+# cell 1 – install libraries
+
+
+# install required libraries
+
+# pandas -> used for data manipulation and analysis
+# numpy -> used for numerical operations
+# matplotlib -> used for plotting graphs
+# seaborn -> used for advanced visualization
+
+# run this only once if libraries are not installed
+
+# !pip install pandas numpy matplotlib seaborn scikit-learn
+
+
+---
+
+# cell 2 – import libraries
+
+
+# importing required python libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+---
+
+# cell 3 – loading iris dataset using sklearn
+
+
+# importing iris dataset from sklearn
+
+from sklearn.datasets import load_iris
+
+# loading dataset
+iris = load_iris()
+
+# converting dataset into pandas dataframe
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+# adding target column
+df['species'] = iris.target
+
+# converting numeric target values into flower names
+df['species'] = df['species'].map({
+    0: 'setosa',
+    1: 'versicolor',
+    2: 'virginica'
+})
+
+# displaying first 5 rows
+print(df.head())
+
+
+---
+
+# cell 4 – save dataset as csv file
+
+
+# saving dataframe into csv file
+
+df.to_csv("iris.csv", index=False)
+
+print("iris dataset saved successfully")
+
+
+---
+
+# cell 5 – loading dataset using downloaded csv file
+
+
+# reading dataset from downloaded csv file
+
+df = pd.read_csv("iris.csv")
+
+# displaying first 5 rows
+print(df.head())
+
+
+---
+
+# cell 6 – loading dataset directly using url method
+
+
+# loading dataset directly from url without downloading manually
+
+# dataset url
+url = "https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv"
+
+# reading dataset from url
+df_url = pd.read_csv(url)
+
+# displaying first 5 rows
+print(df_url.head())
+
+# note:
+# this method downloads and reads the dataset directly from internet
+
+
+---
+
+# cell 7 – checking dimensions of dataset
+
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+# shape gives:
+# rows -> number of records
+# columns -> number of variables
+
+
+---
+
+# cell 8 – checking dataset information
+
+
+# displaying dataset information
+
+print(df.info())
+
+# info() shows:
+# column names
+# non null values
+# data types
+# memory usage
+
+
+---
+
+# cell 9 – checking missing values
+
+
+# checking missing values in dataset
+
+print(df.isnull().sum())
+
+# isnull() checks whether value is null
+# sum() counts total null values in each column
+
+
+---
+
+# cell 10 – descriptive statistics
+
+
+# generating statistical summary
+
+print(df.describe())
+
+# describe() gives:
+# count
+# mean
+# standard deviation
+# minimum value
+# maximum value
+# quartiles
+
+
+---
+
+# cell 11 – variable descriptions and data types
+
+
+# checking data types of columns
+
+print(df.dtypes)
+
+# object -> text/string data
+# float64 -> decimal numeric values
+# int64 -> integer values
+
+
+---
+
+# cell 12 – converting data types
+
+
+# converting data type example
+
+# converting sepal length from float to integer
+df['sepal length (cm)'] = df['sepal length (cm)'].astype(int)
+
+# checking updated data types
+print(df.dtypes)
+
+# astype() converts data type
+
+
+---
+
+# cell 13 – normalization
+
+
+# performing min max normalization
+
+df['petal_length_normalized'] = (
+    (df['petal length (cm)'] - df['petal length (cm)'].min()) /
+    (df['petal length (cm)'].max() - df['petal length (cm)'].min())
+)
+
+# displaying original and normalized values
+print(df[['petal length (cm)', 'petal_length_normalized']].head())
+
+
+---
+
+# cell 14 – label encoding categorical variable
+
+
+# converting categorical species column into numeric values
+
+df['species_encoded'] = df['species'].map({
+    'setosa': 0,
+    'versicolor': 1,
+    'virginica': 2
+})
+
+print(df[['species', 'species_encoded']].head())
+
+# map() replaces text categories with numbers
+
+
+---
+
+# cell 15 – one hot encoding
+
+
+# performing one hot encoding
+
+df_onehot = pd.get_dummies(df, columns=['species'])
+
+# displaying first 5 rows
+print(df_onehot.head())
+
+# get_dummies() creates binary columns
+
+
+---
+
+# cell 16 – histogram using matplotlib
+
+
+# histogram using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['petal width (cm)'])
+
+plt.title("petal width histogram")
+plt.xlabel("petal width")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 17 – histogram using seaborn
+
+
+# histogram using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['petal width (cm)'])
+
+plt.title("petal width histogram using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 18 – scatter plot using matplotlib
+
+
+# scatter plot using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.scatter(
+    df['sepal width (cm)'],
+    df['petal width (cm)']
+)
+
+plt.xlabel("sepal width")
+plt.ylabel("petal width")
+plt.title("scatter plot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 19 – scatter plot using seaborn
+
+
+# scatter plot using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.scatterplot(
+    x='sepal width (cm)',
+    y='petal width (cm)',
+    hue='species',
+    data=df
+)
+
+plt.title("scatter plot using seaborn")
+
+plt.show()
+
+
+---
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#writeup
+
+# practical no. – data wrangling 1
+
+## aim
+
+perform the following operations using python on any open source dataset (e.g. data.csv):
+
+1. import all the required python libraries.
+2. locate an open source data from the web (e.g. kaggle). provide a clear description of the data and its source (i.e. url of the website).
+3. load the dataset into pandas dataframe.
+4. data preprocessing: check for missing values in the data using pandas `isnull()`, `describe()` function to get some initial statistics. provide variable descriptions, types of variables etc. check the dimensions of the dataframe.
+5. data formatting and data normalization: summarize the types of variables by checking the data types (i.e. character, numeric, integer, factor, and logical) of the variables in the dataset. if variables are not in the correct datatype, apply proper type conversions.
+6. turn categorical variables into quantitative variables in python.
+
+---
+
+# dataset information
+
+## dataset used
+
+Titanic Dataset
+
+## dataset source
+
+[Titanic Dataset on Kaggle](https://www.kaggle.com/datasets/yasserh/titanic-dataset)
+
+---
+
+# description of dataset
+
+the titanic dataset contains information about passengers who travelled on the titanic ship. the dataset is commonly used in data analysis and machine learning projects.
+
+the dataset contains details such as:
+
+* passenger id
+* passenger class
+* name
+* gender
+* age
+* fare
+* cabin information
+* port of embarkation
+* survival status
+
+the objective of analysis is to preprocess and clean the dataset so that it becomes suitable for analysis and machine learning tasks.
+
+---
+
+# theory
+
+# what is data wrangling?
+
+data wrangling is the process of:
+
+* collecting data
+* cleaning data
+* transforming data
+* formatting data
+* organizing data
+
+so that it can be properly used for:
+
+* data analysis
+* visualization
+* machine learning
+
+raw data from real-world sources is often:
+
+* incomplete
+* inconsistent
+* unformatted
+* noisy
+
+therefore preprocessing is very important.
+
+---
+
+# python libraries used
+
+---
+
+## 1. pandas
+
+pandas
+
+pandas is a python library used for:
+
+* reading datasets
+* handling tables of data
+* cleaning data
+* preprocessing data
+
+important functions used:
+
+* `read_csv()`
+* `head()`
+* `info()`
+* `describe()`
+* `isnull()`
+* `astype()`
+* `get_dummies()`
+
+---
+
+## 2. numpy
+
+NumPy
+
+numpy is used for:
+
+* numerical operations
+* mathematical calculations
+* array handling
+
+---
+
+## 3. matplotlib
+
+Matplotlib
+
+matplotlib is used for:
+
+* plotting graphs
+* data visualization
+* histograms
+* scatter plots
+* boxplots
+
+---
+
+## 4. seaborn
+
+Seaborn
+
+seaborn is built on matplotlib and is used for:
+
+* advanced visualizations
+* attractive statistical graphs
+* heatmaps
+* distribution plots
+
+---
+
+# important concepts used in practical
+
+---
+
+# dataframe
+
+a dataframe is a table-like data structure provided by pandas.
+
+it contains:
+
+* rows
+* columns
+
+similar to:
+
+* excel sheets
+* sql tables
+
+---
+
+# missing values
+
+missing values are empty or null values present in dataset.
+
+examples:
+
+* nan
+* null
+* blank values
+
+missing values can create problems during:
+
+* analysis
+* visualization
+* machine learning
+
+therefore they must be handled properly.
+
+---
+
+# handling missing values
+
+different methods:
+
+* replacing with mean
+* replacing with median
+* replacing with mode
+* removing rows
+* removing columns
+
+in this practical:
+
+* age column missing values were replaced using mean
+* embarked column missing values were replaced using mode
+* cabin column was removed because it contained too many missing values
+
+---
+
+# datatype conversion
+
+sometimes variables are not stored in correct datatype.
+
+example:
+
+* age may be float instead of integer
+* categorical values may be text
+
+datatype conversion helps:
+
+* memory optimization
+* proper calculations
+* machine learning compatibility
+
+`astype()` function is used for datatype conversion.
+
+---
+
+# normalization
+
+normalization scales data into a fixed range.
+
+mostly:
+0 to 1
+
+normalization is important because:
+
+* different features may have different scales
+* large values can dominate smaller values
+* machine learning models perform better
+
+min-max normalization formula:
+
+x_normalized={x-x_min}/{x_max-x_min}
+
+---
+
+# categorical variables
+
+categorical variables contain categories or text values.
+
+examples:
+
+* male/female
+* embarked locations
+
+machine learning algorithms cannot directly understand text values.
+
+therefore categorical data must be converted into numeric form.
+
+---
+
+# label encoding
+
+label encoding converts categories into numeric values.
+
+example:
+
+| category | encoded value |
+| -------- | ------------- |
+| male     | 0             |
+| female   | 1             |
+
+---
+
+# one hot encoding
+
+one hot encoding creates separate binary columns for categories.
+
+example:
+
+| embarked_c | embarked_q | embarked_s |
+| ---------- | ---------- | ---------- |
+| 1          | 0          | 0          |
+
+this method avoids creating false order relationships between categories.
+
+---
+
+# data visualization
+
+data visualization helps in:
+
+* understanding data
+* finding patterns
+* detecting outliers
+* analyzing relationships
+
+graphs used:
+
+* histogram
+* scatter plot
+* boxplot
+* heatmap
+
+---
+
+# explanation of important functions
+
+| function        | purpose                      |
+| --------------- | ---------------------------- |
+| `read_csv()`    | loads csv dataset            |
+| `head()`        | displays first 5 rows        |
+| `shape`         | displays rows and columns    |
+| `info()`        | shows dataset information    |
+| `describe()`    | provides statistical summary |
+| `isnull()`      | checks missing values        |
+| `fillna()`      | fills missing values         |
+| `astype()`      | converts datatype            |
+| `get_dummies()` | performs one hot encoding    |
+| `drop()`        | removes rows or columns      |
+
+---
+
+# conclusion
+
+thus, the data wrangling operations were successfully performed on the titanic dataset using python.
+
+the dataset was:
+
+* cleaned
+* formatted
+* normalized
+* transformed
+
+missing values and categorical variables were properly handled, making the dataset suitable for further data analysis and machine learning tasks.
+

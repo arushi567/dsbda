@@ -1,0 +1,500 @@
+# data visualization i – titanic dataset visualization using seaborn
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> data manipulation
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+
+# run only once if libraries are not installed
+
+# !pip install pandas matplotlib seaborn
+
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+---
+
+# cell 3 – loading titanic dataset
+
+# loading inbuilt titanic dataset from seaborn
+
+df = sns.load_dataset('titanic')
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 4 – checking dimensions of dataset
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+
+---
+
+# cell 5 – dataset information
+
+# displaying dataset information
+
+print(df.info())
+
+
+---
+
+# cell 6 – checking missing values
+
+# checking missing values in dataset
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 7 – statistical summary
+
+# generating statistical summary
+
+print(df.describe())
+
+
+---
+
+# cell 8 – checking survival count
+
+# counting survived and non survived passengers
+
+print(df['survived'].value_counts())
+
+
+---
+
+# cell 9 – survival count plot using seaborn
+
+# plotting survival count using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.countplot(
+    x='survived',
+    data=df
+)
+
+plt.title("survival count")
+plt.xlabel("survived")
+plt.ylabel("number of passengers")
+
+plt.show()
+
+
+---
+
+# cell 10 – gender wise survival plot
+
+# plotting gender wise survival count
+
+plt.figure(figsize=(6,4))
+
+sns.countplot(
+    x='sex',
+    hue='survived',
+    data=df
+)
+
+plt.title("gender wise survival")
+plt.xlabel("gender")
+plt.ylabel("count")
+
+plt.show()
+
+
+---
+
+# cell 11 – passenger class distribution
+
+# plotting passenger class distribution
+
+plt.figure(figsize=(6,4))
+
+sns.countplot(
+    x='class',
+    data=df
+)
+
+plt.title("passenger class distribution")
+
+plt.show()
+
+
+---
+
+# cell 12 – age distribution using matplotlib
+
+# plotting age distribution using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['age'].dropna())
+
+plt.title("age distribution using matplotlib")
+plt.xlabel("age")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 13 – age distribution using seaborn
+
+# plotting age distribution using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(
+    df['age'].dropna()
+)
+
+plt.title("age distribution using seaborn")
+plt.xlabel("age")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 14 – fare distribution using matplotlib
+
+# plotting fare distribution using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['fare'].dropna())
+
+plt.title("fare distribution using matplotlib")
+plt.xlabel("fare")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 15 – fare distribution using seaborn
+
+# plotting fare distribution using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(
+    df['fare'].dropna()
+)
+
+plt.title("fare distribution using seaborn")
+plt.xlabel("fare")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 16 – boxplot of fare using matplotlib
+
+# plotting fare boxplot using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.boxplot(
+    df['fare'].dropna()
+)
+
+plt.title("fare boxplot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 17 – boxplot of fare using seaborn
+
+# plotting fare boxplot using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.boxplot(
+    y=df['fare']
+)
+
+plt.title("fare boxplot using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 18 – scatter plot using matplotlib
+
+# plotting age vs fare using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.scatter(
+    df['age'],
+    df['fare']
+)
+
+plt.title("age vs fare using matplotlib")
+plt.xlabel("age")
+plt.ylabel("fare")
+
+plt.show()
+
+
+---
+
+# cell 19 – scatter plot using seaborn
+
+# plotting age vs fare using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.scatterplot(
+    x='age',
+    y='fare',
+    hue='survived',
+    data=df
+)
+
+plt.title("age vs fare using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 20 – heatmap of correlation
+
+# plotting correlation heatmap
+
+plt.figure(figsize=(8,5))
+
+sns.heatmap(
+    df.corr(numeric_only=True),
+    annot=True
+)
+
+plt.title("correlation heatmap")
+
+plt.show()
+
+
+---
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# writeup
+
+# aim
+
+1. use the inbuilt dataset 'titanic' and use seaborn library to find patterns in the data.
+2. write a python program to check how the ticket price (fare) of each passenger is distributed using histogram.
+
+---
+
+# dataset information
+
+## dataset used
+
+Titanic Dataset
+
+## dataset description
+
+the titanic dataset contains information about passengers aboard the titanic ship.
+
+the dataset includes:
+
+* passenger age
+* gender
+* ticket fare
+* passenger class
+* survival status
+
+the dataset contains 891 rows.
+
+---
+
+# theory
+
+# what is data visualization?
+
+data visualization is the graphical representation of data using:
+
+* charts
+* graphs
+* plots
+
+it helps in:
+
+* understanding patterns
+* identifying trends
+* detecting outliers
+* simplifying large data
+
+---
+
+# seaborn library
+
+seaborn is a python data visualization library built on matplotlib.
+
+used for:
+
+* attractive statistical graphics
+* easier plotting
+* advanced visualizations
+
+---
+
+# titanic dataset
+
+the titanic dataset is one of the most popular datasets used for:
+
+* data analysis
+* machine learning
+* visualization
+
+it contains information about passengers who survived or died during the titanic disaster.
+
+---
+
+# histogram
+
+histogram represents frequency distribution of numerical data.
+
+used for:
+
+* understanding distribution
+* identifying skewness
+* detecting outliers
+
+in this practical:
+
+* histogram was plotted for fare column.
+
+---
+
+# countplot
+
+countplot displays count of observations in each category.
+
+examples:
+
+* male vs female
+* survived vs not survived
+
+---
+
+# scatter plot
+
+scatter plot shows relationship between two numerical variables.
+
+example:
+
+* age vs fare
+
+---
+
+# boxplot
+
+boxplot helps identify:
+
+* spread of data
+* median
+* outliers
+
+---
+
+# heatmap
+
+heatmap visually represents correlation values between variables using colors.
+
+positive correlation:
+
+* variables increase together
+
+negative correlation:
+
+* one increases while other decreases
+
+---
+
+# libraries used
+
+| library    | purpose           |
+| ---------- | ----------------- |
+| pandas     | data manipulation |
+| matplotlib | plotting graphs   |
+| seaborn    | visualization     |
+
+---
+
+# important functions used
+
+| function         | purpose                       |
+| ---------------- | ----------------------------- |
+| `load_dataset()` | loads inbuilt seaborn dataset |
+| `histplot()`     | plots histogram               |
+| `countplot()`    | plots category counts         |
+| `scatterplot()`  | plots scatter graph           |
+| `boxplot()`      | plots boxplot                 |
+| `heatmap()`      | plots correlation heatmap     |
+
+---
+
+# explanation of operations performed
+
+in this practical:
+
+* titanic dataset was loaded using seaborn
+* dataset dimensions and information were checked
+* missing values were identified
+* survival patterns were analyzed
+* gender wise survival count was visualized
+* passenger class distribution was plotted
+* age distribution was visualized
+* fare distribution was plotted using histogram
+* boxplots and scatter plots were created
+* correlation heatmap was generated
+
+---
+
+# conclusion
+
+thus, titanic dataset was successfully analyzed and visualized using seaborn and matplotlib.
+
+different graphs helped in identifying:
+
+* survival patterns
+* fare distribution
+* passenger class trends
+* relationship between age and fare
+
+histograms, scatter plots, boxplots and heatmaps provided better understanding of the dataset.

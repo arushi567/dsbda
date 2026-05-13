@@ -1,0 +1,373 @@
+# data visualization ii – box plot analysis using titanic dataset
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> data manipulation
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+
+# run only once if libraries are not installed
+
+# !pip install pandas matplotlib seaborn
+
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+---
+
+# cell 3 – loading titanic dataset
+
+# loading inbuilt titanic dataset from seaborn
+
+df = sns.load_dataset('titanic')
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 4 – checking dimensions
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+
+---
+
+# cell 5 – dataset information
+
+# displaying dataset information
+
+print(df.info())
+
+
+---
+
+# cell 6 – checking missing values
+
+# checking missing values
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 7 – statistical summary
+
+# displaying statistical summary
+
+print(df.describe())
+
+
+---
+
+# cell 8 – checking unique values
+
+# checking unique values in sex and survived columns
+
+print(df['sex'].unique())
+
+print(df['survived'].unique())
+
+
+---
+
+# cell 9 – box plot using seaborn
+
+# plotting box plot of age with respect to gender and survival
+
+plt.figure(figsize=(8,5))
+
+sns.boxplot(
+    x='sex',
+    y='age',
+    hue='survived',
+    data=df
+)
+
+plt.title("age distribution based on gender and survival")
+plt.xlabel("gender")
+plt.ylabel("age")
+
+plt.show()
+
+
+---
+
+# cell 10 – box plot using matplotlib
+
+# creating separate age data for plotting
+
+male_age = df[df['sex'] == 'male']['age'].dropna()
+
+female_age = df[df['sex'] == 'female']['age'].dropna()
+
+# plotting box plot using matplotlib
+
+plt.figure(figsize=(6,5))
+
+plt.boxplot(
+    [male_age, female_age],
+    labels=['male', 'female']
+)
+
+plt.title("age distribution based on gender using matplotlib")
+plt.ylabel("age")
+
+plt.show()
+
+
+---
+
+# cell 11 – countplot for survival comparison
+
+# plotting survival count based on gender
+
+plt.figure(figsize=(6,4))
+
+sns.countplot(
+    x='sex',
+    hue='survived',
+    data=df
+)
+
+plt.title("gender wise survival count")
+
+plt.show()
+
+
+---
+
+# cell 12 – histogram of age using matplotlib
+
+# plotting age distribution using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['age'].dropna())
+
+plt.title("age distribution using matplotlib")
+plt.xlabel("age")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 13 – histogram of age using seaborn
+
+# plotting age distribution using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(
+    df['age'].dropna()
+)
+
+plt.title("age distribution using seaborn")
+plt.xlabel("age")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 14 – violin plot using seaborn
+
+# plotting violin plot for age distribution
+
+plt.figure(figsize=(8,5))
+
+sns.violinplot(
+    x='sex',
+    y='age',
+    hue='survived',
+    data=df
+)
+
+plt.title("violin plot of age distribution")
+
+plt.show()
+
+
+---
+
+# observations and inference
+
+## observations from box plot
+
+1. female passengers had higher survival rates compared to male passengers.
+
+2. many male passengers did not survive, especially adults.
+
+3. children had better survival chances compared to older passengers.
+
+4. female passengers who survived mostly belonged to younger and middle age groups.
+
+5. age distribution for males was wider, showing more variation in ages.
+
+6. outliers are visible in the box plot, representing passengers with unusually high ages.
+
+7. median age for male passengers was slightly higher than female passengers.
+
+---
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# writeup
+
+# aim
+
+1. use the inbuilt dataset 'titanic' and plot a box plot for distribution of age with respect to each gender along with survival information.
+2. write observations and inference from the plotted statistics.
+
+---
+
+# dataset information
+
+## dataset used
+
+Titanic Dataset
+
+## dataset description
+
+the titanic dataset contains passenger information from the titanic ship disaster.
+
+the dataset includes:
+
+* age
+* gender
+* survival status
+* passenger class
+* fare
+* embark town
+
+the dataset contains 891 rows.
+
+---
+
+# theory
+
+# what is data visualization?
+
+data visualization is the graphical representation of data using graphs and charts.
+
+it helps in:
+
+* understanding trends
+* finding patterns
+* detecting outliers
+* comparing variables
+
+---
+
+# seaborn library
+
+seaborn is a python library used for statistical data visualization.
+
+advantages:
+
+* attractive plots
+* easy syntax
+* works with pandas dataframes
+
+---
+
+# box plot
+
+box plot is used to display:
+
+* median
+* quartiles
+* spread of data
+* outliers
+
+components of box plot:
+
+* minimum value
+* first quartile
+* median
+* third quartile
+* maximum value
+* outliers
+
+---
+
+# violin plot
+
+violin plot combines:
+
+* box plot
+* density distribution
+
+it helps understand data distribution more clearly.
+
+---
+
+# histogram
+
+histogram shows frequency distribution of numerical data.
+
+used for:
+
+* checking skewness
+* understanding spread of data
+
+---
+
+# important functions used
+
+| function         | purpose                       |
+| ---------------- | ----------------------------- |
+| `load_dataset()` | loads inbuilt seaborn dataset |
+| `boxplot()`      | plots box plot                |
+| `violinplot()`   | plots violin plot             |
+| `countplot()`    | plots count graph             |
+| `histplot()`     | plots histogram               |
+
+---
+
+# explanation of operations performed
+
+in this practical:
+
+* titanic dataset was loaded
+* dataset dimensions and information were checked
+* missing values were identified
+* box plot was created for age distribution with respect to gender and survival
+* matplotlib box plot was also created
+* histogram and violin plots were generated
+* observations and inference were written based on plots
+
+---
+
+# conclusion
+
+thus, titanic dataset was successfully visualized using seaborn and matplotlib.
+
+box plots and violin plots helped analyze:
+
+* age distribution
+* gender wise survival
+* outliers
+* spread of passenger ages
+
+the visualization clearly showed that female passengers and children had higher survival chances compared to male passengers.

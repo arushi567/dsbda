@@ -1,0 +1,556 @@
+# MapReduce- group-b exp-2
+
+STEP 1 — Install IntelliJ IDEA
+
+Download IntelliJ IDEA Community Edition from:
+
+IntelliJ IDEA Community Edition
+https://www.jetbrains.com/idea/download
+
+During installation:
+
+✔ Create Desktop Shortcut
+✔ Add “Open Folder as Project”
+✔ Associate .java files
+x Add to PATH not necessary
+
+Finish installation.
+
+STEP 2 — Open IntelliJ IDEA
+
+Open:
+
+IntelliJ IDEA
+
+Click:
+
+New Project
+STEP 3 — Create Java Project
+
+Select:
+
+Java
+
+Project Name:
+
+LogAnalysisProject
+
+Location:
+Choose any desired folder.
+
+JDK:
+Select installed Java version (Java 8 or above)
+
+Click:
+
+Create
+STEP 4 — Verify Project Structure
+
+Project structure should look like:
+
+LogAnalysisProject
+│
+├── src
+│
+└── log.txt
+STEP 5 — Create log.txt File
+
+Right click project name:
+
+New → File
+
+Name the file:
+
+log.txt
+STEP 6 — Add Dataset
+
+Open dataset source:
+
+Hadoop 2k Log File
+https://github.com/logpai/loghub/blob/master/Hadoop/Hadoop_2k.log
+
+Copy all contents and paste into:
+
+log.txt
+
+Save the file.
+
+STEP 7 — Create LogMapper Class
+
+Right click:
+
+src
+
+Select:
+
+New → Java Class
+
+Class Name:
+LogMapper
+LogMapper.java:
+
+
+// import bufferedreader to read text file efficiently line by line
+import java.io.BufferedReader;
+
+// import filereader to open and read file from disk
+import java.io.FileReader;
+
+// import ioexception to handle file input/output errors
+import java.io.IOException;
+
+// import arraylist to store intermediate mapper outputs dynamically
+import java.util.ArrayList;
+
+// import list interface to store collection of mapper results
+import java.util.List;
+
+public class LogMapper {
+
+    // this method simulates the mapper phase of mapreduce
+    // it reads log file and converts each line into (key,value) format
+    public List<String> map() throws IOException {
+
+        // list to store intermediate key-value outputs from mapper
+        // each entry will be in format: "loglevel,1"
+        List<String> mappedData = new ArrayList<>();
+
+        // bufferedreader is used for fast and efficient file reading
+        BufferedReader br = new BufferedReader(
+                new FileReader("log.txt"));
+
+        String line;
+
+        // counter used for debugging and limiting console output
+        int debugCount = 0;
+
+
+        // read file line by line until end of file
+        while ((line = br.readLine()) != null) {
+
+            // split each log line into parts using space as delimiter
+            String[] parts = line.split(" ");
+
+            // check if line has valid structure (to avoid index errors)
+            if (parts.length > 2) {
+
+                // extract log level from log line
+                // index 2 contains INFO / ERROR / WARN etc.
+                String logLevel = parts[2];
+
+                // core mapper logic:
+                // emit intermediate key-value pair as string
+                // format is: (loglevel,1)
+                mappedData.add(logLevel + ",1");
+
+                // debug output: print only first 10 mapped values
+                // this is only for understanding output, not required in real mapreduce
+                if (debugCount < 10) {
+                    System.out.println("(" + logLevel + ",1)");
+                }
+
+                // increment counter after processing each valid line
+                debugCount++;
+            }
+        }
+
+        // close file to free system resources
+        br.close();
+
+        // show summary of mapper execution
+        System.out.println("\n... mapper output truncated ...");
+        System.out.println("total records processed: " + debugCount);
+
+        // return all intermediate mapper outputs to driver/reducer
+        return mappedData;
+    }
+}
+
+Explanation of Mapper
+
+The mapper:
+
+reads the log file
+extracts log levels
+emits intermediate key-value pairs
+limits displayed output to avoid printing thousands of lines
+
+STEP 8 — Create LogReducer Class
+
+Right click src
+
+Select:
+
+New → Java Class
+
+Class Name:
+LogReducer
+LogReducer.java
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class LogReducer {
+
+    // this method simulates reducer phase
+    // it takes mapper output and aggregates counts
+    public Map<String, Integer> reduce(List<String> mappedData) {
+
+        // hashmap to store final counts of each log level
+        Map<String, Integer> result = new HashMap<>();
+
+        // iterate through mapper output
+        for (String entry : mappedData) {
+
+            // split key-value pair
+            String[] parts = entry.split(",");
+
+            // extract log level
+            String logLevel = parts[0];
+
+            // update count in hashmap
+            result.put(
+                    logLevel,
+                    result.getOrDefault(logLevel, 0) + 1
+            );
+        }
+
+        // return final reduced result
+        return result;
+    }
+}
+
+Explanation of Reducer
+
+The reducer:
+
+groups identical log levels
+counts occurrences
+displays final aggregated result
+STEP 9 — Create LogDriver Class
+
+Right click src
+
+Select:
+
+New → Java Class
+
+Class Name:
+LogDriver
+LogDriver.java
+
+
+import java.util.List;
+import java.util.Map;
+
+public class LogDriver {
+
+    public static void main(String[] args) throws Exception {
+
+        // create mapper object
+        LogMapper mapper = new LogMapper();
+
+        System.out.println("Map Phase Output:\n");
+
+        // run mapper phase and collect intermediate data
+        List<String> mappedData = mapper.map();
+
+        System.out.println("\nReducer Output:\n");
+
+        // create reducer object
+        LogReducer reducer = new LogReducer();
+
+        // run reducer phase using mapper output
+        Map<String, Integer> result = reducer.reduce(mappedData);
+
+        // print final output
+        System.out.println("final log level count:\n");
+
+        for (Map.Entry<String, Integer> entry : result.entrySet()) {
+
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
+
+        System.out.println("\nprocessing completed");
+    }
+}
+
+Explanation of Driver
+
+The driver:
+
+controls overall execution
+starts mapper phase
+starts reducer phase
+displays final result
+STEP 10 — Final Project Structure
+LogAnalysisProject
+│
+├── src
+│   ├── LogMapper.java
+│   ├── LogReducer.java
+│   └── LogDriver.java
+│
+└── log.txt
+STEP 11 — Run the Program
+
+Open:
+
+LogDriver.java
+
+Click:
+
+▶ Run
+SAMPLE OUTPUT
+Map Phase Output:
+
+(INFO,1)
+(INFO,1)
+(INFO,1)
+(WARN,1)
+(ERROR,1)
+(INFO,1)
+(INFO,1)
+(WARN,1)
+(INFO,1)
+(ERROR,1)
+
+... mapper output truncated ...
+total records processed: 2000
+
+Reducer Output:
+
+ERROR 150
+INFO 1040
+FATAL 2
+WARN 808
+
+Processing Completed
+
+RESULT
+
+The distributed log analysis application was successfully implemented using the MapReduce concept in Java. The program successfully processed Hadoop log data and counted occurrences of different log levels.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#writeup
+
+Design a Distributed Application Using MapReduce to Process a System Log File
+AIM
+
+To design and implement a distributed application using the MapReduce concept in Java that processes a Hadoop system log file and counts occurrences of different log levels such as INFO, WARN, ERROR, and FATAL.
+
+The log file dataset is taken from:
+
+LogHub Hadoop 2k Dataset
+https://github.com/logpai/loghub/blob/master/Hadoop/Hadoop_2k.log
+
+Dataset File Name:
+
+log.txt
+
+This dataset contains approximately 2000 real Hadoop log records.
+
+THEORY
+1. INTRODUCTION TO HADOOP
+What is Hadoop?
+
+Apache Hadoop is an open-source framework used for storing and processing very large datasets across multiple computers.
+
+It is designed for:
+
+distributed computing
+parallel processing
+big data analytics
+fault tolerance
+scalability
+
+Hadoop can process:
+
+terabytes
+petabytes
+billions of records
+
+efficiently by dividing work across multiple systems.
+
+Why Hadoop is Needed
+
+Traditional systems face problems when:
+
+data becomes extremely large
+processing takes too much time
+one machine cannot handle computation
+
+Hadoop solves this by:
+
+splitting data
+distributing work
+processing parts simultaneously
+Main Components of Hadoop
+Component	Purpose
+HDFS	stores large files across machines
+MapReduce	processes data in parallel
+YARN	manages resources
+Hadoop Common	shared libraries
+HDFS (Hadoop Distributed File System)
+
+HDFS stores files across multiple machines instead of one computer.
+
+Features:
+
+fault tolerant
+scalable
+distributed storage
+replication support
+
+Example:
+A 10 GB file may be split into smaller blocks and stored on different nodes.
+
+What is MapReduce?
+
+MapReduce is a programming model used in Hadoop for processing huge datasets.
+
+It works in two major phases:
+
+Mapper Phase
+Reducer Phase
+2. MAPPER PHASE
+
+The mapper:
+
+reads input data
+processes records
+generates key-value pairs
+
+Example:
+
+Input:
+
+INFO system started
+
+Mapper Output:
+
+(INFO,1)
+
+Meaning:
+
+key = INFO
+value = 1
+
+Every occurrence emits:
+
+(loglevel,1)
+Why Mapper is Important
+
+Mapper performs:
+
+filtering
+transformation
+extraction
+
+It converts raw data into structured intermediate data.
+
+3. REDUCER PHASE
+
+Reducer receives grouped mapper output.
+
+Example:
+
+Mapper outputs:
+
+(INFO,1)
+(INFO,1)
+(INFO,1)
+
+Reducer calculates:
+
+INFO 3
+
+Reducer performs:
+
+aggregation
+counting
+summarization
+4. FLOW OF MAPREDUCE
+Input Data
+    ↓
+Mapper
+    ↓
+Intermediate Key-Value Pairs
+    ↓
+Shuffle and Sort
+    ↓
+Reducer
+    ↓
+Final Output
+
+CONCEPT USED IN THIS PRACTICAL
+
+This practical simulates the MapReduce concept using Java.
+
+The program:
+
+reads Hadoop log data
+extracts log levels
+simulates mapper output
+counts occurrences of each log level
+displays final aggregated result
+
+Although actual Hadoop execution is not used, the logic follows the MapReduce model.
+
+LOG FILE STRUCTURE
+
+Sample Hadoop log entry:
+
+2015-10-18 18:01:47,978 INFO [main] org.apache.hadoop.mapreduce...
+
+After splitting using spaces:
+
+Index	Value
+parts[0]	date
+parts[1]	time
+parts[2]	INFO/WARN/ERROR
+
+Therefore:
+
+String logLevel = parts[2];
+
+extracts the log level successfully.
+
+ALGORITHM
+Read the log file line-by-line.
+Split each line using spaces.
+Extract log level using parts[2].
+Mapper emits (loglevel,1).
+Reducer groups identical log levels.
+Count occurrences of each log level.
+Display final output.
+OUTPUT
+Map Phase Output:
+
+(INFO,1)
+(INFO,1)
+(WARN,1)
+(ERROR,1)
+
+... mapper output truncated ...
+total records processed: 2000
+
+Reducer Output:
+
+ERROR 150
+INFO 1040
+FATAL 2
+WARN 808
+
+Processing Completed
+RESULT
+
+The Hadoop log file was processed successfully using the MapReduce concept and occurrences of different log levels were counted efficiently.
+
+CONCLUSION
+
+The practical successfully demonstrated the MapReduce programming model using Java. The mapper extracted log levels from Hadoop system logs and the reducer counted occurrences of INFO, WARN, ERROR, and FATAL log entries, simulating distributed log analysis.

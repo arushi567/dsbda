@@ -1,0 +1,609 @@
+# data visualization iii – iris dataset visualization and analysis
+
+---
+
+# cell 1 – installing required libraries
+
+# install required python libraries
+
+# pandas -> data manipulation
+# matplotlib -> plotting graphs
+# seaborn -> advanced visualization
+
+# run only once if libraries are not installed
+
+# !pip install pandas matplotlib seaborn
+
+
+---
+
+# cell 2 – importing required libraries
+
+# importing required python libraries
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+---
+
+# cell 3 – loading iris dataset
+
+# loading iris dataset from csv file
+# https://www.kaggle.com/datasets/uciml/iris/data
+
+df = pd.read_csv("Iris.csv")
+
+# displaying first 5 rows
+
+print(df.head())
+
+
+---
+
+# cell 4 – loading dataset using url
+
+# loading dataset directly using url
+
+# example:
+
+# url = "https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv"
+
+# df = pd.read_csv(url)
+
+# print(df.head())
+
+---
+
+# cell 5 – checking dimensions
+
+# checking number of rows and columns
+
+print("shape of dataset:", df.shape)
+
+
+---
+
+# cell 6 – dataset information
+
+# displaying dataset information
+
+print(df.info())
+
+
+---
+
+# cell 7 – checking missing values
+
+# checking missing values in dataset
+
+print(df.isnull().sum())
+
+
+---
+
+# cell 8 – statistical summary
+
+# generating statistical summary
+
+print(df.describe())
+
+
+---
+
+# cell 9 – listing features and data types
+
+# displaying feature names and data types
+
+print(df.dtypes)
+
+
+---
+
+# cell 10 – classifying feature types
+
+
+# manually describing feature types
+
+feature_types = {
+    'Id': 'numeric',
+    'SepalLengthCm': 'numeric',
+    'SepalWidthCm': 'numeric',
+    'PetalLengthCm': 'numeric',
+    'PetalWidthCm': 'numeric',
+    'Species': 'nominal'
+}
+
+print(feature_types)
+
+
+---
+
+# cell 11 – histogram of sepal length using matplotlib
+
+# histogram of sepal length using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['SepalLengthCm'])
+
+plt.title("sepal length distribution using matplotlib")
+plt.xlabel("sepal length")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 12 – histogram of sepal length using seaborn
+
+# histogram of sepal length using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['SepalLengthCm'])
+
+plt.title("sepal length distribution using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 13 – histogram of sepal width using matplotlib
+
+# histogram of sepal width using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['SepalWidthCm'])
+
+plt.title("sepal width distribution using matplotlib")
+plt.xlabel("sepal width")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 14 – histogram of sepal width using seaborn
+
+# histogram of sepal width using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['SepalWidthCm'])
+
+plt.title("sepal width distribution using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 15 – histogram of petal length using matplotlib
+
+# histogram of petal length using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['PetalLengthCm'])
+
+plt.title("petal length distribution using matplotlib")
+plt.xlabel("petal length")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 16 – histogram of petal length using seaborn
+
+# histogram of petal length using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['PetalLengthCm'])
+
+plt.title("petal length distribution using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 17 – histogram of petal width using matplotlib
+
+# histogram of petal width using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.hist(df['PetalWidthCm'])
+
+plt.title("petal width distribution using matplotlib")
+plt.xlabel("petal width")
+plt.ylabel("frequency")
+
+plt.show()
+
+
+---
+
+# cell 18 – histogram of petal width using seaborn
+
+# histogram of petal width using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.histplot(df['PetalWidthCm'])
+
+plt.title("petal width distribution using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 19 – boxplot of sepal length using matplotlib
+
+# boxplot of sepal length using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.boxplot(df['SepalLengthCm'])
+
+plt.title("sepal length boxplot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 20 – boxplot of sepal length using seaborn
+
+# boxplot of sepal length using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.boxplot(
+    y=df['SepalLengthCm']
+)
+
+plt.title("sepal length boxplot using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 21 – boxplot of sepal width using matplotlib
+
+# boxplot of sepal width using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.boxplot(df['SepalWidthCm'])
+
+plt.title("sepal width boxplot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 22 – boxplot of sepal width using seaborn
+
+# boxplot of sepal width using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.boxplot(
+    y=df['SepalWidthCm']
+)
+
+plt.title("sepal width boxplot using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 23 – boxplot of petal length using matplotlib
+
+# boxplot of petal length using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.boxplot(df['PetalLengthCm'])
+
+plt.title("petal length boxplot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 24 – boxplot of petal length using seaborn
+
+# boxplot of petal length using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.boxplot(
+    y=df['PetalLengthCm']
+)
+
+plt.title("petal length boxplot using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 25 – boxplot of petal width using matplotlib
+
+# boxplot of petal width using matplotlib
+
+plt.figure(figsize=(6,4))
+
+plt.boxplot(df['PetalWidthCm'])
+
+plt.title("petal width boxplot using matplotlib")
+
+plt.show()
+
+
+---
+
+# cell 26 – boxplot of petal width using seaborn
+
+# boxplot of petal width using seaborn
+
+plt.figure(figsize=(6,4))
+
+sns.boxplot(
+    y=df['PetalWidthCm']
+)
+
+plt.title("petal width boxplot using seaborn")
+
+plt.show()
+
+
+---
+
+# cell 27 – pairplot visualization
+
+# plotting pairplot for feature comparison
+
+sns.pairplot(
+    df,
+    hue='Species'
+)
+
+plt.show()
+
+
+---
+
+# observations and inference
+
+## feature types
+
+| feature       | type    |
+| ------------- | ------- |
+| id            | numeric |
+| sepallengthcm | numeric |
+| sepalwidthcm  | numeric |
+| petallengthcm | numeric |
+| petalwidthcm  | numeric |
+| species       | nominal |
+
+---
+
+## observations from histograms
+
+1. sepal length values are distributed between approximately 4 cm and 8 cm.
+
+2. sepal width values are concentrated between 2 cm and 4 cm.
+
+3. petal length and petal width show multiple peaks because of different flower species.
+
+4. petal related features clearly separate flower species better than sepal features.
+
+---
+
+## observations from boxplots
+
+1. sepal width contains some outliers.
+
+2. petal length and petal width have fewer outliers.
+
+3. median values differ significantly across features.
+
+4. spread of petal length values is higher compared to sepal width.
+
+---
+
+## comparison of distributions
+
+1. petal features show better variation and separation among species.
+
+2. sepal features overlap more between species.
+
+3. petal width and petal length are useful for classification tasks.
+
+---
+
+# student writeup
+
+# aim
+
+1. download iris flower dataset into dataframe.
+2. scan the dataset and:
+
+* list features and their types
+* create histogram for each feature
+* create boxplot for each feature
+* compare distributions and identify outliers
+
+---
+
+# dataset information
+
+## dataset used
+
+Iris Dataset
+# https://www.kaggle.com/datasets/uciml/iris/data
+
+## dataset description
+
+the iris dataset contains measurements of iris flowers.
+
+features include:
+
+* sepal length
+* sepal width
+* petal length
+* petal width
+
+target column:
+
+* species
+
+species:
+
+* iris-setosa
+* iris-versicolor
+* iris-virginica
+
+---
+
+# theory
+
+# what is data visualization?
+
+data visualization is graphical representation of data using:
+
+* graphs
+* charts
+* plots
+
+it helps in:
+
+* understanding data
+* finding trends
+* identifying outliers
+* comparing distributions
+
+---
+
+# histogram
+
+histogram represents frequency distribution of numerical data.
+
+used for:
+
+* understanding spread of data
+* identifying skewness
+* checking data concentration
+
+---
+
+# boxplot
+
+boxplot displays:
+
+* minimum value
+* maximum value
+* median
+* quartiles
+* outliers
+
+outliers appear as points outside whiskers.
+
+---
+
+# pairplot
+
+pairplot compares relationships among multiple variables.
+
+used for:
+
+* feature comparison
+* identifying class separation
+
+---
+
+# nominal data
+
+nominal variables contain category names without numerical meaning.
+
+example:
+
+* flower species
+
+---
+
+# numeric data
+
+numeric variables contain measurable numerical values.
+
+examples:
+
+* height
+* age
+* petal length
+
+---
+
+# libraries used
+
+| library    | purpose                |
+| ---------- | ---------------------- |
+| pandas     | data manipulation      |
+| matplotlib | plotting graphs        |
+| seaborn    | advanced visualization |
+
+---
+
+# important functions used
+
+| function     | purpose                        |
+| ------------ | ------------------------------ |
+| `read_csv()` | loads dataset                  |
+| `hist()`     | plots histogram                |
+| `histplot()` | seaborn histogram              |
+| `boxplot()`  | plots boxplot                  |
+| `pairplot()` | compares feature relationships |
+
+---
+
+# explanation of operations performed
+
+in this practical:
+
+* iris dataset was loaded
+* dataset dimensions and statistics were checked
+* feature types were identified
+* histograms were plotted for all features
+* boxplots were plotted for all features
+* pairplot was generated
+* distributions and outliers were analyzed
+
+---
+
+# conclusion
+
+thus, iris dataset was successfully visualized and analyzed using matplotlib and seaborn.
+
+histograms and boxplots helped in:
+
+* understanding feature distributions
+* identifying outliers
+* comparing numerical features
+
+petal related features showed better separation among flower species compared to sepal related features.
